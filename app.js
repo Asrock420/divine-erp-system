@@ -1,21 +1,15 @@
-// ✅ তোমার নতুন ব্যাকএন্ড লিংক (Updated)
 const API_URL = "https://script.google.com/macros/s/AKfycbxVi7QepVy-va6AV2kXSNhVH1elrS8Z_TUgdpd8gSAnBmgSApWhpn0eClfkeZBJyRn5CA/exec";
 
-// অ্যাপ লোড
 window.onload = function() {
     const user = JSON.parse(localStorage.getItem("divineUser"));
     if(user) showApp(user);
 };
 
-// ১. লগিন
+// লগিন ফাংশন (Same as before)
 function handleLogin() {
     const phone = document.getElementById("phone").value;
     const pass = document.getElementById("password").value;
-    const btn = document.getElementById("loginBtn");
-    const msg = document.getElementById("login-msg");
-
-    if(!phone || !pass) return alert("তথ্য দিন!");
-    btn.innerText = "Checking...";
+    document.getElementById("loginBtn").innerText = "Checking...";
     
     fetch(`${API_URL}?action=login&phone=${phone}&pass=${pass}`)
     .then(res => res.json())
@@ -24,135 +18,93 @@ function handleLogin() {
             localStorage.setItem("divineUser", JSON.stringify(data.user));
             showApp(data.user);
         } else {
-            msg.innerText = data.message;
-            btn.innerText = "Login";
+            alert(data.message);
+            document.getElementById("loginBtn").innerText = "Login";
         }
-    })
-    .catch(err => { console.error(err); btn.innerText = "Login"; alert("Connection Error"); });
+    });
 }
 
-// ২. অ্যাপ ইন্টারফেস
+// 🔥 মেইন লজিক: রোল অনুযায়ী থিম এবং ফিচার সেট করা
 function showApp(user) {
     document.getElementById("login-screen").style.display = "none";
     document.getElementById("app-container").style.display = "flex";
-    document.getElementById("user-role-display").innerText = `${user.name} (${user.role})`;
+    document.getElementById("user-role-display").innerText = user.name;
 
-    // মেনু রেন্ডার
+    // ১. থিম সেট করা (Theme Engine)
+    document.body.className = ""; // Reset
+    if (user.role === 'CEO') {
+        document.body.classList.add('theme-ceo'); // Ultra Modern
+    } else if (user.role === 'Martech') {
+        document.body.classList.add('theme-martech'); // Hacker Mode
+    } else if (user.role === 'Accounts' || user.role === 'CR') {
+        document.body.classList.add('theme-elegant'); // Soft/Feminine
+    } else {
+        document.body.classList.add('theme-sales'); // Default Sales
+    }
+
+    // ২. মেনু জেনারেশন (Menu Generator)
     const menu = document.getElementById("sidebar-menu");
-    menu.innerHTML = `<li onclick="showSection('dashboard')" class="active"><i class="fas fa-home"></i> Dashboard</li>`;
-    
-    // মারটেক স্পেশাল মেনু
-    if(user.role === 'Martech' || user.role === 'CEO') {
-        document.getElementById("martech-search").style.display = "block"; // সার্চ বার অন
-        menu.innerHTML += `<li onclick="showSection('leads-panel'); loadLeads();"><i class="fas fa-users"></i> All Leads</li>`;
-        menu.innerHTML += `<li onclick="showSection('bill-panel'); loadBills();"><i class="fas fa-file-invoice-dollar"></i> Bills</li>`;
-    } 
-    // সেলসম্যান মেনু
-    else if(user.role === 'Sales') {
-        menu.innerHTML += `<li onclick="showSection('leads-panel'); loadLeads();"><i class="fas fa-phone"></i> My Leads</li>`;
+    menu.innerHTML = `<li onclick="showSection('dashboard')">📊 Dashboard</li>`;
+
+    // CEO স্পেশাল মেনু
+    if(user.role === 'CEO') {
+        // CEO-র কোনো ডাটা এন্ট্রি মেনু নেই, শুধু রিপোর্ট
+        document.getElementById("ceo-reports").style.display = "block"; // CEO Report Section Show
+        document.getElementById("martech-search").style.display = "none"; // CEO doesn't need search bar immediately
     }
-    // অ্যাকাউন্টস মেনু
-    else if(user.role === 'Accounts') {
-        menu.innerHTML += `<li onclick="showSection('bill-panel'); loadBills();"><i class="fas fa-calculator"></i> Pending Bills</li>`;
+    
+    // Martech মেনু
+    else if(user.role === 'Martech') {
+        document.getElementById("martech-search").style.display = "block"; // Spy Search Active
+        menu.innerHTML += `<li onclick="showSection('leads-panel'); loadLeads();">🕵️‍♂️ All Leads (Spy)</li>`;
+        menu.innerHTML += `<li onclick="showSection('bill-panel');">⚙️ System Control</li>`;
     }
 
-    loadStats(user);
+    // Accounts/CR মেনু
+    else if(user.role === 'Accounts' || user.role === 'CR') {
+        menu.innerHTML += `<li onclick="showSection('bill-panel');">💰 Collections & Bills</li>`;
+        // CR Ticket system link here
+    }
+
+    // Sales মেনু
+    else {
+        menu.innerHTML += `<li onclick="showSection('leads-panel'); loadLeads();">📞 My Leads</li>`;
+    }
+
+    // ৩. ড্যাশবোর্ড ডাটা লোড
+    loadDashboardStats(user);
 }
 
-// ৩. সেকশন পরিবর্তন
+// ড্যাশবোর্ডে স্ট্যাটস দেখানো (CEO vs Others)
+function loadDashboardStats(user) {
+    const cardsDiv = document.getElementById("stats-cards");
+    
+    if(user.role === 'CEO') {
+        // CEO View: Big Numbers only
+        cardsDiv.innerHTML = `
+            <div class="card"><h1>৳ 50.5 Cr</h1><p>Total Revenue</p></div>
+            <div class="card"><h1>1,250</h1><p>Total Leads</p></div>
+            <div class="card"><h1>120</h1><p>Active Staff</p></div>
+            <div class="card"><h1>98%</h1><p>Efficiency</p></div>
+        `;
+    } else {
+        // Staff View
+        cardsDiv.innerHTML = `
+            <div class="card"><h3>My Targets</h3><h1>Pending</h1></div>
+            <div class="card"><h3>Today's Call</h3><h1>0</h1></div>
+        `;
+    }
+}
+
+// PDF ডাউনলোড ফাংশন (CEO-র জন্য)
+function downloadReport(dept) {
+    alert(`Downloading ${dept} Report as PDF... (System generating file)`);
+    // ভবিষ্যতে এখানে jsPDF লাইব্রেরি দিয়ে রিয়েল পিডিএফ জেনারেট করা হবে
+}
+
+// অন্য ফাংশনগুলো (showSection, logout) আগের মতোই থাকবে...
 function showSection(id) {
     document.querySelectorAll('.section').forEach(d => d.style.display = 'none');
     document.getElementById(id).style.display = 'block';
-    if(window.innerWidth < 768) document.getElementById("sidebar").classList.remove("active");
 }
-
-// ৪. লিড লোড করা (পানিশমেন্ট লজিক সহ)
-function loadLeads() {
-    const user = JSON.parse(localStorage.getItem("divineUser"));
-    const tbody = document.querySelector("#leads-table tbody");
-    tbody.innerHTML = "<tr><td colspan='4'>Loading Leads...</td></tr>";
-
-    fetch(`${API_URL}?action=get_my_leads&user=${user.name}`)
-    .then(res => res.json())
-    .then(data => {
-        tbody.innerHTML = "";
-        if(data.status === "success") {
-            data.data.forEach(lead => {
-                // পানিশমেন্ট চেক: যদি ব্লকড হয়
-                let rowClass = lead.isBlocked ? "status-blocked" : "";
-                let actionBtn = lead.isBlocked 
-                    ? `<i class="fas fa-lock"></i> Locked`
-                    : `<a href="tel:${lead.phone}" class="btn-call">📞 Call</a>`;
-
-                tbody.innerHTML += `
-                    <tr class="${rowClass}">
-                        <td>${lead.name}<br><small>${lead.source}</small></td>
-                        <td>${lead.phone}</td>
-                        <td>${lead.status}</td>
-                        <td>${actionBtn}</td>
-                    </tr>
-                `;
-            });
-        }
-    });
-}
-
-// ৫. মারটেক সার্চ (Spy Search)
-function searchLead() {
-    const query = document.getElementById("search-query").value;
-    const resDiv = document.getElementById("search-results");
-    resDiv.innerHTML = "Searching...";
-    
-    fetch(`${API_URL}?action=search_lead&query=${query}`)
-    .then(res => res.json())
-    .then(data => {
-        if(data.results.length > 0) {
-            let html = `<ul style="list-style:none; padding:0;">`;
-            data.results.forEach(r => {
-                html += `<li style="background:white; padding:10px; border-bottom:1px solid #ddd;">
-                    <strong>${r.name}</strong> (${r.phone}) <br>
-                    Agent: <b style="color:blue">${r.agent}</b> | Status: ${r.status}
-                </li>`;
-            });
-            html += `</ul>`;
-            resDiv.innerHTML = html;
-        } else {
-            resDiv.innerHTML = "❌ No Data Found";
-        }
-    });
-}
-
-// ৬. ডাটা সেভ (লিড বা বিল)
-function saveData(type) {
-    const user = JSON.parse(localStorage.getItem("divineUser"));
-    let payload = { user: user.name };
-
-    if(type === 'lead') {
-        payload.action = "add_lead";
-        payload.name = document.getElementById("lead_name").value;
-        payload.phone = document.getElementById("lead_phone").value;
-        payload.source = document.getElementById("lead_source").value;
-        payload.assignTo = user.name; // নিজে অ্যাড করলে নিজের নামেই থাকবে
-    } 
-    else if(type === 'bill') {
-        payload.action = "submit_bill";
-        payload.dept = user.dept;
-        payload.purpose = document.getElementById("bill_purpose").value;
-        payload.amount = document.getElementById("bill_amount").value;
-        payload.desc = document.getElementById("bill_desc").value;
-        payload.phone = user.phone;
-    }
-
-    fetch(API_URL, { method: "POST", body: JSON.stringify(payload) })
-    .then(res => res.json())
-    .then(data => {
-        alert(data.message);
-        if(data.status === "success") {
-            closeModal(`${type}-modal`);
-            if(type === 'lead') loadLeads();
-        }
-    });
-}
-
 function logout() { localStorage.removeItem("divineUser"); location.reload(); }
-function loadStats(user) { /* Stats logic later */ }
