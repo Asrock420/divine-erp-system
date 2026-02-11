@@ -1,56 +1,50 @@
-/* বেসিক সেটআপ */
-body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; }
+body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; }
 * { box-sizing: border-box; }
 
-/* লগিন পেজ */
-#login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+/* Login */
+#login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; justify-content: center; align-items: center; z-index: 999; }
 .login-box { background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 350px; text-align: center; }
 .login-box input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
-.login-box button { width: 100%; padding: 12px; background: #2c3e50; color: white; border: none; border-radius: 5px; font-size: 16px; margin-top: 10px; }
+.login-box button { width: 100%; padding: 12px; background: #2c3e50; color: white; border: none; border-radius: 5px; cursor: pointer; }
 
-/* অ্যাপ লেআউট */
+/* Main Layout */
 #app-container { display: flex; height: 100vh; overflow: hidden; }
-
-/* সাইডবার (Desktop) */
-.sidebar { width: 250px; background: #2c3e50; color: white; display: flex; flex-direction: column; height: 100%; transition: 0.3s; }
+.sidebar { width: 250px; background: #2c3e50; color: white; display: flex; flex-direction: column; transition: 0.3s; }
 .logo { padding: 20px; background: #1a252f; text-align: center; position: relative; }
 .close-btn { display: none; position: absolute; right: 20px; top: 20px; cursor: pointer; }
 .menu { list-style: none; padding: 0; margin: 0; }
 .menu li { padding: 15px 20px; border-bottom: 1px solid #34495e; cursor: pointer; }
-.menu li:hover, .menu li.active { background: #3498db; }
-.logout { margin-top: auto; padding: 20px; }
-.logout button { width: 100%; padding: 10px; background: #e74c3c; color: white; border: none; border-radius: 5px; }
+.menu li.active { background: #3498db; }
 
-/* মেইন কন্টেন্ট */
-.main-content { flex: 1; padding: 20px; overflow-y: auto; background: #f4f7f6; width: 100%; }
-header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-
-/* কার্ড ডিজাইন */
+.main-content { flex: 1; padding: 20px; overflow-y: auto; width: 100%; }
 .cards { display: flex; gap: 15px; flex-wrap: wrap; }
-.card { flex: 1; min-width: 250px; padding: 20px; border-radius: 8px; color: white; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-.card h1 { font-size: 32px; margin: 10px 0; }
+.card { flex: 1; min-width: 250px; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-/* ফর্ম ডিজাইন (ইনপুট) */
-.card-form { background: white; padding: 20px; border-radius: 8px; max-width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-.card-form input, .card-form select { width: 100%; padding: 12px; margin: 8px 0 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
-.btn-save { background: #27ae60; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-size: 16px; font-weight: bold; }
+/* Buttons & Inputs */
+.btn-action { background: #27ae60; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 15px; }
+input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ddd; border-radius: 5px; }
 
-/* মোবাইল ন্যাভিগেশন বার (শুরুতে লুকানো থাকবে) */
+/* Table */
+.table-container { overflow-x: auto; background: white; border-radius: 8px; padding: 10px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+th { background-color: #f8f9fa; }
+
+/* Status Colors */
+.status-new { color: blue; font-weight: bold; }
+.status-blocked { color: red; font-weight: bold; background: #ffe6e6; padding: 5px; border-radius: 4px; }
+
+/* Mobile */
 .mobile-nav { display: none; background: #2c3e50; color: white; padding: 15px; align-items: center; justify-content: space-between; }
-.mobile-nav i { font-size: 24px; cursor: pointer; }
-
-/* 📱 মোবাইল রেস্পন্সিভ কোড */
-@media screen and (max-width: 768px) {
+@media (max-width: 768px) {
     #app-container { flex-direction: column; }
-    
-    /* সাইডবার মোবাইলে শুরুতে লুকানো থাকবে */
-    .sidebar { position: fixed; left: -250px; top: 0; height: 100%; z-index: 1000; width: 250px; box-shadow: 2px 0 5px rgba(0,0,0,0.5); }
-    .sidebar.active { left: 0; } /* টগল করলে আসবে */
-    .close-btn { display: block; }
-    
-    /* মোবাইল মেনু বার দেখাও */
+    .sidebar { position: fixed; left: -250px; top: 0; height: 100%; z-index: 1000; width: 250px; }
+    .sidebar.active { left: 0; }
     .mobile-nav { display: flex; }
-    
-    .main-content { padding: 15px; }
-    .card { min-width: 100%; } /* কার্ড পুরো স্ক্রিন নেবে */
+    .close-btn { display: block; }
 }
+
+/* Modal */
+.modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+.modal-content { background-color: white; margin: 15% auto; padding: 20px; border-radius: 8px; width: 90%; max-width: 400px; }
+.close { float: right; font-size: 28px; cursor: pointer; }

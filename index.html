@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divine ERP | Mobile Optimized</title>
+    <title>Divine ERP | Ultimate</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -12,7 +12,7 @@
     <div id="login-screen">
         <div class="login-box">
             <h2 style="color:#2c3e50;">👑 Divine ERP</h2>
-            <p>Login to Continue</p>
+            <p>Login to Access</p>
             <input type="text" id="phone" placeholder="Phone Number" required>
             <input type="password" id="password" placeholder="Password" required>
             <button onclick="handleLogin()" id="loginBtn">Login <i class="fas fa-arrow-right"></i></button>
@@ -24,14 +24,15 @@
         
         <div class="mobile-nav">
             <i class="fas fa-bars" onclick="toggleMenu()"></i>
-            <h3>Divine ERP</h3>
+            <h3>Divine Group</h3>
         </div>
 
         <div class="sidebar" id="sidebar">
             <div class="logo">
-                <h3>Divine Group</h3>
-                <small id="user-role-display">Role: ...</small>
-                <i class="fas fa-times close-btn" onclick="toggleMenu()"></i> </div>
+                <h3>Divine ERP</h3>
+                <small id="user-role-display">User: ...</small>
+                <i class="fas fa-times close-btn" onclick="toggleMenu()"></i>
+            </div>
             <ul class="menu" id="sidebar-menu">
                 </ul>
             <div class="logout">
@@ -40,67 +41,84 @@
         </div>
 
         <div class="main-content">
-            <header>
-                <h3 id="welcome-msg">Welcome</h3>
-                <div class="status-dot online"></div>
-            </header>
-
+            
             <div id="dashboard" class="section">
-                <h1>📊 Dashboard</h1>
+                <h1>📊 Overview</h1>
+                <div id="martech-search" style="display:none; margin-bottom:20px;">
+                    <input type="text" id="search-query" placeholder="🔍 Search any Lead (Phone/Name)..." style="width:70%; padding:10px;">
+                    <button onclick="searchLead()" style="padding:10px; background:#3498db; color:white; border:none;">Search</button>
+                    <div id="search-results" style="margin-top:10px;"></div>
+                </div>
+
                 <div class="cards" id="stats-cards">
-                    <div class="card"><h3>Loading...</h3></div>
+                    <div class="card"><h3>Loading Stats...</h3></div>
                 </div>
             </div>
 
-            <div id="accounts" class="section" style="display:none;">
-                <h1>💰 Accounts Entry</h1>
-                <div class="card-form">
-                    <h3>Add Transaction</h3>
-                    <label>Type:</label>
-                    <select id="acc_type">
-                        <option value="Income">Income (আয়)</option>
-                        <option value="Expense">Expense (ব্যয়)</option>
-                    </select>
-                    <label>Amount:</label>
-                    <input type="number" id="acc_amount" placeholder="taka 0.00">
-                    <label>Category:</label>
-                    <input type="text" id="acc_cat" placeholder="e.g. Office Rent, Bill">
-                    <label>Description:</label>
-                    <input type="text" id="acc_desc" placeholder="Details...">
-                    <button class="btn-save" onclick="saveData('accounts')">Save Transaction</button>
+            <div id="leads-panel" class="section" style="display:none;">
+                <h1>📞 My Leads</h1>
+                <button class="btn-action" onclick="showModal('lead-modal')">+ Add New Lead</button>
+                <div class="table-container">
+                    <table id="leads-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
                 </div>
             </div>
 
-            <div id="cr" class="section" style="display:none;">
-                <h1>🎧 New CR Ticket</h1>
-                <div class="card-form">
-                    <h3>Create Ticket</h3>
-                    <input type="text" id="cr_client" placeholder="Client Name">
-                    <input type="text" id="cr_phone" placeholder="Client Phone">
-                    <select id="cr_issue">
-                        <option>Complain</option>
-                        <option>Query</option>
-                        <option>File Transfer</option>
-                    </select>
-                    <button class="btn-save" onclick="saveData('cr')">Submit Ticket</button>
-                </div>
+            <div id="bill-panel" class="section" style="display:none;">
+                <h1>💰 Bill Approvals</h1>
+                <button class="btn-action" onclick="showModal('bill-modal')">+ Create Bill</button>
+                <div id="bill-list"></div>
             </div>
 
-            <div id="crm" class="section" style="display:none;"><h1>🤝 Sales CRM</h1><p>Leads list coming soon...</p></div>
-             <div id="hr" class="section" style="display:none;"><h1>👔 HR Panel</h1><div class="card-form"><h3>Add Employee</h3><input id="hr_name" placeholder="Name"><input id="hr_phone" placeholder="Phone"><button class="btn-save" onclick="saveData('hr')">Add</button></div></div>
-             <div id="logistic" class="section" style="display:none;"><h1>🚚 Logistics</h1></div>
-             <div id="admin_assets" class="section" style="display:none;"><h1>💻 Assets</h1></div>
+            <div id="admin-panel" class="section" style="display:none;">
+                <h1>⚙️ Admin Control</h1>
+                <p>User Management & Settings (Coming Soon)</p>
+            </div>
 
+        </div>
+    </div>
+
+    <div id="lead-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('lead-modal')">&times;</span>
+            <h3>Add New Lead</h3>
+            <input type="text" id="lead_name" placeholder="Client Name">
+            <input type="text" id="lead_phone" placeholder="Phone Number">
+            <select id="lead_source">
+                <option value="Facebook">Facebook</option>
+                <option value="Referral">Referral</option>
+                <option value="Cold Call">Cold Call</option>
+            </select>
+            <button onclick="saveData('lead')">Save Lead</button>
+        </div>
+    </div>
+
+    <div id="bill-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('bill-modal')">&times;</span>
+            <h3>Submit Bill</h3>
+            <input type="text" id="bill_purpose" placeholder="Purpose (e.g. Ads)">
+            <input type="number" id="bill_amount" placeholder="Amount">
+            <textarea id="bill_desc" placeholder="Details..."></textarea>
+            <button onclick="saveData('bill')">Submit</button>
         </div>
     </div>
 
     <script src="app.js"></script>
     <script>
-        // মোবাইলের জন্য মেনু টগল ফাংশন
-        function toggleMenu() {
-            const sidebar = document.getElementById("sidebar");
-            sidebar.classList.toggle("active");
-        }
+        function toggleMenu() { document.getElementById("sidebar").classList.toggle("active"); }
+        function showModal(id) { document.getElementById(id).style.display = "block"; }
+        function closeModal(id) { document.getElementById(id).style.display = "none"; }
     </script>
 </body>
 </html>

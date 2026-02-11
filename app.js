@@ -1,19 +1,20 @@
-// ✅ তোমার দেওয়া লিংক (Backend v3)
-const API_URL = "https://script.google.com/macros/s/AKfycbzuk0GTOs_PdQCoBIbm2IyQjGN4nKXdKHsHYpILbtPasp9fCPXPXGiXrypjREeF6Al_yg/exec";
+// ✅ তোমার নতুন ব্যাকএন্ড লিংক (Updated)
+const API_URL = "https://script.google.com/macros/s/AKfycbxVi7QepVy-va6AV2kXSNhVH1elrS8Z_TUgdpd8gSAnBmgSApWhpn0eClfkeZBJyRn5CA/exec";
 
+// অ্যাপ লোড
 window.onload = function() {
     const user = JSON.parse(localStorage.getItem("divineUser"));
     if(user) showApp(user);
 };
 
-// 1. লগিন
+// ১. লগিন
 function handleLogin() {
     const phone = document.getElementById("phone").value;
     const pass = document.getElementById("password").value;
     const btn = document.getElementById("loginBtn");
     const msg = document.getElementById("login-msg");
 
-    if(!phone || !pass) { msg.innerText = "সব তথ্য দিন"; return; }
+    if(!phone || !pass) return alert("তথ্য দিন!");
     btn.innerText = "Checking...";
     
     fetch(`${API_URL}?action=login&phone=${phone}&pass=${pass}`)
@@ -27,107 +28,131 @@ function handleLogin() {
             btn.innerText = "Login";
         }
     })
-    .catch(err => { msg.innerText = "ইন্টারনেট কানেকশন চেক করুন"; btn.innerText = "Login"; });
+    .catch(err => { console.error(err); btn.innerText = "Login"; alert("Connection Error"); });
 }
 
-// 2. অ্যাপ দেখানো
+// ২. অ্যাপ ইন্টারফেস
 function showApp(user) {
     document.getElementById("login-screen").style.display = "none";
     document.getElementById("app-container").style.display = "flex";
-    document.getElementById("welcome-msg").innerText = `Hello, ${user.name}`;
-    document.getElementById("user-role-display").innerText = user.role;
-    
-    renderMenu(user.access);
-    loadDashboard(user.role);
-}
+    document.getElementById("user-role-display").innerText = `${user.name} (${user.role})`;
 
-// 3. মেনু তৈরি
-function renderMenu(permissions) {
+    // মেনু রেন্ডার
     const menu = document.getElementById("sidebar-menu");
     menu.innerHTML = `<li onclick="showSection('dashboard')" class="active"><i class="fas fa-home"></i> Dashboard</li>`;
-
-    if(permissions.includes('all')) {
-        menu.innerHTML += `
-            <li onclick="showSection('crm')"><i class="fas fa-users"></i> CRM (Sales)</li>
-            <li onclick="showSection('hr')"><i class="fas fa-user-tie"></i> HRM</li>
-            <li onclick="showSection('accounts')"><i class="fas fa-calculator"></i> Accounts</li>
-            <li onclick="showSection('logistic')"><i class="fas fa-truck"></i> Logistics</li>
-            <li onclick="showSection('cr')"><i class="fas fa-headset"></i> CR Ticket</li>
-        `;
-    } else {
-        if(permissions.includes('accounts')) menu.innerHTML += `<li onclick="showSection('accounts')"><i class="fas fa-calculator"></i> Accounts</li>`;
-        if(permissions.includes('cr')) menu.innerHTML += `<li onclick="showSection('cr')"><i class="fas fa-headset"></i> CR Ticket</li>`;
-        if(permissions.includes('hr')) menu.innerHTML += `<li onclick="showSection('hr')"><i class="fas fa-user-tie"></i> HRM</li>`;
-        // আরও রোল থাকলে এখানে যোগ হবে
+    
+    // মারটেক স্পেশাল মেনু
+    if(user.role === 'Martech' || user.role === 'CEO') {
+        document.getElementById("martech-search").style.display = "block"; // সার্চ বার অন
+        menu.innerHTML += `<li onclick="showSection('leads-panel'); loadLeads();"><i class="fas fa-users"></i> All Leads</li>`;
+        menu.innerHTML += `<li onclick="showSection('bill-panel'); loadBills();"><i class="fas fa-file-invoice-dollar"></i> Bills</li>`;
+    } 
+    // সেলসম্যান মেনু
+    else if(user.role === 'Sales') {
+        menu.innerHTML += `<li onclick="showSection('leads-panel'); loadLeads();"><i class="fas fa-phone"></i> My Leads</li>`;
     }
+    // অ্যাকাউন্টস মেনু
+    else if(user.role === 'Accounts') {
+        menu.innerHTML += `<li onclick="showSection('bill-panel'); loadBills();"><i class="fas fa-calculator"></i> Pending Bills</li>`;
+    }
+
+    loadStats(user);
 }
 
-// 4. পেজ পরিবর্তন (মোবাইলে মেনু অটো বন্ধ হবে)
+// ৩. সেকশন পরিবর্তন
 function showSection(id) {
     document.querySelectorAll('.section').forEach(d => d.style.display = 'none');
     document.getElementById(id).style.display = 'block';
-    
-    // হাইলাইট
-    document.querySelectorAll('.menu li').forEach(li => li.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-
-    // মোবাইলে মেনু ক্লিক করলে সাইডবার বন্ধ হয়ে যাবে
-    const sidebar = document.getElementById("sidebar");
-    if(window.innerWidth < 768) {
-        sidebar.classList.remove("active");
-    }
+    if(window.innerWidth < 768) document.getElementById("sidebar").classList.remove("active");
 }
 
-// 5. ড্যাশবোর্ড ডাটা
-function loadDashboard(role) {
-    fetch(`${API_URL}?action=getStats&role=${role}`)
+// ৪. লিড লোড করা (পানিশমেন্ট লজিক সহ)
+function loadLeads() {
+    const user = JSON.parse(localStorage.getItem("divineUser"));
+    const tbody = document.querySelector("#leads-table tbody");
+    tbody.innerHTML = "<tr><td colspan='4'>Loading Leads...</td></tr>";
+
+    fetch(`${API_URL}?action=get_my_leads&user=${user.name}`)
     .then(res => res.json())
     .then(data => {
+        tbody.innerHTML = "";
         if(data.status === "success") {
-            const s = data.stats;
-            document.getElementById("stats-cards").innerHTML = `
-                <div class="card" style="background:#6a11cb"><h3>Total Leads</h3><h1>${s.leads}</h1></div>
-                <div class="card" style="background:#11998e"><h3>Total Staff</h3><h1>${s.staff}</h1></div>
-                <div class="card" style="background:#ff5e62"><h3>My Sales</h3><h1>${s.sales}</h1></div>
-            `;
+            data.data.forEach(lead => {
+                // পানিশমেন্ট চেক: যদি ব্লকড হয়
+                let rowClass = lead.isBlocked ? "status-blocked" : "";
+                let actionBtn = lead.isBlocked 
+                    ? `<i class="fas fa-lock"></i> Locked`
+                    : `<a href="tel:${lead.phone}" class="btn-call">📞 Call</a>`;
+
+                tbody.innerHTML += `
+                    <tr class="${rowClass}">
+                        <td>${lead.name}<br><small>${lead.source}</small></td>
+                        <td>${lead.phone}</td>
+                        <td>${lead.status}</td>
+                        <td>${actionBtn}</td>
+                    </tr>
+                `;
+            });
         }
     });
 }
 
-// 6. ডাটা সেভ
+// ৫. মারটেক সার্চ (Spy Search)
+function searchLead() {
+    const query = document.getElementById("search-query").value;
+    const resDiv = document.getElementById("search-results");
+    resDiv.innerHTML = "Searching...";
+    
+    fetch(`${API_URL}?action=search_lead&query=${query}`)
+    .then(res => res.json())
+    .then(data => {
+        if(data.results.length > 0) {
+            let html = `<ul style="list-style:none; padding:0;">`;
+            data.results.forEach(r => {
+                html += `<li style="background:white; padding:10px; border-bottom:1px solid #ddd;">
+                    <strong>${r.name}</strong> (${r.phone}) <br>
+                    Agent: <b style="color:blue">${r.agent}</b> | Status: ${r.status}
+                </li>`;
+            });
+            html += `</ul>`;
+            resDiv.innerHTML = html;
+        } else {
+            resDiv.innerHTML = "❌ No Data Found";
+        }
+    });
+}
+
+// ৬. ডাটা সেভ (লিড বা বিল)
 function saveData(type) {
     const user = JSON.parse(localStorage.getItem("divineUser"));
-    const btn = event.target;
-    const originalText = btn.innerText;
-    btn.innerText = "Saving...";
-    btn.disabled = true;
-
     let payload = { user: user.name };
 
-    if(type === 'accounts') {
-        payload.action = "add_account";
-        payload.type = document.getElementById("acc_type").value;
-        payload.cat = document.getElementById("acc_cat").value;
-        payload.amount = document.getElementById("acc_amount").value;
-        payload.desc = document.getElementById("acc_desc").value;
-        if(!payload.amount) { alert("Amount missing!"); btn.disabled=false; btn.innerText=originalText; return; }
+    if(type === 'lead') {
+        payload.action = "add_lead";
+        payload.name = document.getElementById("lead_name").value;
+        payload.phone = document.getElementById("lead_phone").value;
+        payload.source = document.getElementById("lead_source").value;
+        payload.assignTo = user.name; // নিজে অ্যাড করলে নিজের নামেই থাকবে
+    } 
+    else if(type === 'bill') {
+        payload.action = "submit_bill";
+        payload.dept = user.dept;
+        payload.purpose = document.getElementById("bill_purpose").value;
+        payload.amount = document.getElementById("bill_amount").value;
+        payload.desc = document.getElementById("bill_desc").value;
+        payload.phone = user.phone;
     }
-    else if(type === 'cr') {
-        payload.action = "add_ticket";
-        payload.client = document.getElementById("cr_client").value;
-        payload.phone = document.getElementById("cr_phone").value;
-        payload.issue = document.getElementById("cr_issue").value;
-    }
-    // ... HR data logic here if needed
 
     fetch(API_URL, { method: "POST", body: JSON.stringify(payload) })
     .then(res => res.json())
     .then(data => {
         alert(data.message);
-        btn.innerText = originalText;
-        btn.disabled = false;
-        if(type==='accounts') { document.getElementById("acc_amount").value = ""; } // ফিল্ড ক্লিয়ার
+        if(data.status === "success") {
+            closeModal(`${type}-modal`);
+            if(type === 'lead') loadLeads();
+        }
     });
 }
 
 function logout() { localStorage.removeItem("divineUser"); location.reload(); }
+function loadStats(user) { /* Stats logic later */ }
