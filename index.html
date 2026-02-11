@@ -1,74 +1,42 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divine ERP | All-in-One Solution</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-</head>
-<body>
-
-    <div id="login-screen">
-        <div class="login-box">
-            <h2 style="color:#2c3e50;">👑 Divine ERP</h2>
-            <p>Secure Login System</p>
-            <input type="text" id="phone" placeholder="Phone Number (e.g. 017...)" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button onclick="handleLogin()" id="loginBtn">Login <i class="fas fa-arrow-right"></i></button>
-            <p id="login-msg" style="color:red; font-size:12px; margin-top:10px;"></p>
-        </div>
+<div id="hr" class="section" style="display:none;">
+    <h1>👔 HR Management</h1>
+    <div class="card-form">
+        <h3>New Employee Entry</h3>
+        <input type="text" id="hr_name" placeholder="Employee Name">
+        <input type="text" id="hr_phone" placeholder="Phone">
+        <select id="hr_role">
+            <option>Sales</option><option>CR</option><option>Accounts</option>
+        </select>
+        <button class="btn-save" onclick="saveData('hr')">Add Employee</button>
     </div>
+</div>
 
-    <div id="app-container" style="display:none;">
-        
-        <div class="sidebar">
-            <div class="logo">
-                <h3>Divine Group</h3>
-                <small id="user-role-display">Role: ...</small>
-            </div>
-            <ul class="menu" id="sidebar-menu">
-                </ul>
-            <div class="logout">
-                <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
-            </div>
-        </div>
-
-        <div class="main-content">
-            <header>
-                <h3 id="welcome-msg">Welcome</h3>
-                <div class="status-dot online"></div>
-            </header>
-
-            <div id="dashboard" class="section">
-                <h1>📊 Dashboard Overview</h1>
-                <div class="cards" id="stats-cards">
-                    <div class="card"><h3>Loading data...</h3></div>
-                </div>
-            </div>
-
-            <div id="crm" class="section" style="display:none;">
-                <h1>🤝 CRM (Sales)</h1>
-                <p>Leads Management Module.</p>
-            </div>
-
-            <div id="hr" class="section" style="display:none;">
-                <h1>👔 HR Management</h1>
-                <p>Employee List & Attendance.</p>
-            </div>
-
-            <div id="accounts" class="section" style="display:none;">
-                <h1>💰 Accounts</h1>
-                <p>Income & Expense.</p>
-            </div>
-            
-            <div id="admin_assets" class="section" style="display:none;"><h1>💻 Admin Assets</h1></div>
-             <div id="logistic" class="section" style="display:none;"><h1>🚚 Logistics</h1></div>
-             <div id="cr" class="section" style="display:none;"><h1>🎧 CR Ticket</h1></div>
-
-        </div>
+<div id="accounts" class="section" style="display:none;">
+    <h1>💰 Accounts Entry</h1>
+    <div class="card-form">
+        <h3>Add Transaction</h3>
+        <select id="acc_type">
+            <option value="Income">Income (আয়)</option>
+            <option value="Expense">Expense (ব্যয়)</option>
+        </select>
+        <input type="text" id="acc_cat" placeholder="Category (e.g. Rent, Bill)">
+        <input type="number" id="acc_amount" placeholder="Amount (টাকা)">
+        <input type="text" id="acc_desc" placeholder="Details/Note">
+        <button class="btn-save" onclick="saveData('accounts')">Save Transaction</button>
     </div>
+</div>
 
-    <script src="app.js"></script>
-</body>
-</html>
+<div id="cr" class="section" style="display:none;">
+    <h1>🎧 CR Ticket System</h1>
+    <div class="card-form">
+        <h3>Create New Ticket</h3>
+        <input type="text" id="cr_client" placeholder="Client Name">
+        <input type="text" id="cr_phone" placeholder="Client Phone">
+        <select id="cr_issue">
+            <option>Complain</option>
+            <option>General Query</option>
+            <option>File Transfer</option>
+        </select>
+        <button class="btn-save" onclick="saveData('cr')">Create Ticket</button>
+    </div>
+</div>
