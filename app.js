@@ -1,35 +1,25 @@
-// ✅ তোমার নতুন ব্যাকএন্ড লিংক (আপডেট করা হয়েছে)
+// ✅ তোমার দেওয়া লিংক (Backend v3)
 const API_URL = "https://script.google.com/macros/s/AKfycbzuk0GTOs_PdQCoBIbm2IyQjGN4nKXdKHsHYpILbtPasp9fCPXPXGiXrypjREeF6Al_yg/exec";
 
-// ১. অ্যাপ লোড হলে চেক করবে কেউ লগিন আছে কি না
 window.onload = function() {
     const user = JSON.parse(localStorage.getItem("divineUser"));
-    if(user) {
-        showApp(user);
-    }
+    if(user) showApp(user);
 };
 
-// ২. লগিন ফাংশন
+// 1. লগিন
 function handleLogin() {
     const phone = document.getElementById("phone").value;
     const pass = document.getElementById("password").value;
     const btn = document.getElementById("loginBtn");
     const msg = document.getElementById("login-msg");
 
-    if(!phone || !pass) { 
-        msg.innerText = "Phone & Password required!"; 
-        return; 
-    }
-
+    if(!phone || !pass) { msg.innerText = "সব তথ্য দিন"; return; }
     btn.innerText = "Checking...";
-    msg.innerText = "";
-
-    // API কল করা হচ্ছে (GET Request)
+    
     fetch(`${API_URL}?action=login&phone=${phone}&pass=${pass}`)
     .then(res => res.json())
     .then(data => {
         if(data.status === "success") {
-            // ব্রাউজারে ডাটা সেভ রাখা
             localStorage.setItem("divineUser", JSON.stringify(data.user));
             showApp(data.user);
         } else {
@@ -37,62 +27,58 @@ function handleLogin() {
             btn.innerText = "Login";
         }
     })
-    .catch(err => {
-        console.error(err);
-        msg.innerText = "Connection Error! Check Console.";
-        btn.innerText = "Login";
-    });
+    .catch(err => { msg.innerText = "ইন্টারনেট কানেকশন চেক করুন"; btn.innerText = "Login"; });
 }
 
-// ৩. অ্যাপ দেখানো এবং মেনু সাজানো (রোল অনুযায়ী)
+// 2. অ্যাপ দেখানো
 function showApp(user) {
     document.getElementById("login-screen").style.display = "none";
     document.getElementById("app-container").style.display = "flex";
-    document.getElementById("welcome-msg").innerText = `Welcome, ${user.name}`;
-    document.getElementById("user-role-display").innerText = `Role: ${user.role}`;
-
+    document.getElementById("welcome-msg").innerText = `Hello, ${user.name}`;
+    document.getElementById("user-role-display").innerText = user.role;
+    
     renderMenu(user.access);
     loadDashboard(user.role);
 }
 
-// ৪. ডাইনামিক মেনু তৈরি (কে কী দেখবে)
+// 3. মেনু তৈরি
 function renderMenu(permissions) {
     const menu = document.getElementById("sidebar-menu");
     menu.innerHTML = `<li onclick="showSection('dashboard')" class="active"><i class="fas fa-home"></i> Dashboard</li>`;
 
-    // Martech / CEO সব দেখবে
     if(permissions.includes('all')) {
         menu.innerHTML += `
             <li onclick="showSection('crm')"><i class="fas fa-users"></i> CRM (Sales)</li>
-            <li onclick="showSection('hr')"><i class="fas fa-user-tie"></i> HRM (Staff)</li>
+            <li onclick="showSection('hr')"><i class="fas fa-user-tie"></i> HRM</li>
             <li onclick="showSection('accounts')"><i class="fas fa-calculator"></i> Accounts</li>
-            <li onclick="showSection('admin_assets')"><i class="fas fa-laptop"></i> Admin Assets</li>
             <li onclick="showSection('logistic')"><i class="fas fa-truck"></i> Logistics</li>
             <li onclick="showSection('cr')"><i class="fas fa-headset"></i> CR Ticket</li>
         `;
-    } 
-    // নির্দিষ্ট রোল অনুযায়ী মেনু
-    else {
-        if(permissions.includes('crm')) menu.innerHTML += `<li onclick="showSection('crm')"><i class="fas fa-users"></i> CRM</li>`;
-        if(permissions.includes('hr')) menu.innerHTML += `<li onclick="showSection('hr')"><i class="fas fa-user-tie"></i> HRM</li>`;
+    } else {
         if(permissions.includes('accounts')) menu.innerHTML += `<li onclick="showSection('accounts')"><i class="fas fa-calculator"></i> Accounts</li>`;
-        if(permissions.includes('logistic')) menu.innerHTML += `<li onclick="showSection('logistic')"><i class="fas fa-truck"></i> Logistics</li>`;
-        if(permissions.includes('admin_assets')) menu.innerHTML += `<li onclick="showSection('admin_assets')"><i class="fas fa-laptop"></i> Admin Assets</li>`;
         if(permissions.includes('cr')) menu.innerHTML += `<li onclick="showSection('cr')"><i class="fas fa-headset"></i> CR Ticket</li>`;
+        if(permissions.includes('hr')) menu.innerHTML += `<li onclick="showSection('hr')"><i class="fas fa-user-tie"></i> HRM</li>`;
+        // আরও রোল থাকলে এখানে যোগ হবে
     }
 }
 
-// ৫. পেজ পরিবর্তন করা
+// 4. পেজ পরিবর্তন (মোবাইলে মেনু অটো বন্ধ হবে)
 function showSection(id) {
     document.querySelectorAll('.section').forEach(d => d.style.display = 'none');
     document.getElementById(id).style.display = 'block';
     
-    // মেনু হাইলাইট
+    // হাইলাইট
     document.querySelectorAll('.menu li').forEach(li => li.classList.remove('active'));
     event.currentTarget.classList.add('active');
+
+    // মোবাইলে মেনু ক্লিক করলে সাইডবার বন্ধ হয়ে যাবে
+    const sidebar = document.getElementById("sidebar");
+    if(window.innerWidth < 768) {
+        sidebar.classList.remove("active");
+    }
 }
 
-// ৬. ড্যাশবোর্ড ডাটা আনা (GET Request)
+// 5. ড্যাশবোর্ড ডাটা
 function loadDashboard(role) {
     fetch(`${API_URL}?action=getStats&role=${role}`)
     .then(res => res.json())
@@ -100,92 +86,48 @@ function loadDashboard(role) {
         if(data.status === "success") {
             const s = data.stats;
             document.getElementById("stats-cards").innerHTML = `
-                <div class="card" style="background: linear-gradient(45deg, #6a11cb, #2575fc);"><h3>Total Leads</h3><h1>${s.leads}</h1></div>
-                <div class="card" style="background: linear-gradient(45deg, #11998e, #38ef7d);"><h3>Total Staff</h3><h1>${s.staff}</h1></div>
-                <div class="card" style="background: linear-gradient(45deg, #ff9966, #ff5e62);"><h3>Sales</h3><h1>${s.sales}</h1></div>
+                <div class="card" style="background:#6a11cb"><h3>Total Leads</h3><h1>${s.leads}</h1></div>
+                <div class="card" style="background:#11998e"><h3>Total Staff</h3><h1>${s.staff}</h1></div>
+                <div class="card" style="background:#ff5e62"><h3>My Sales</h3><h1>${s.sales}</h1></div>
             `;
         }
     });
 }
 
-// ৭. ডাটা সেভ করার ফাংশন (Universal Save Function - POST Request)
+// 6. ডাটা সেভ
 function saveData(type) {
     const user = JSON.parse(localStorage.getItem("divineUser"));
-    if(!user) return alert("Please Login First!");
-
-    let payload = {};
-    const btn = event.target; // যে বাটনে ক্লিক করেছে
+    const btn = event.target;
     const originalText = btn.innerText;
-    
-    // বাটন লোডিং দেখাবে
     btn.innerText = "Saving...";
     btn.disabled = true;
 
-    // A. Accounts Data Ready করা
+    let payload = { user: user.name };
+
     if(type === 'accounts') {
-        const amount = document.getElementById("acc_amount").value;
-        if(!amount) { alert("Amount required!"); btn.innerText = originalText; btn.disabled = false; return; }
-
-        payload = {
-            action: "add_account",
-            type: document.getElementById("acc_type").value,
-            cat: document.getElementById("acc_cat").value,
-            amount: amount,
-            desc: document.getElementById("acc_desc").value,
-            user: user.name
-        };
+        payload.action = "add_account";
+        payload.type = document.getElementById("acc_type").value;
+        payload.cat = document.getElementById("acc_cat").value;
+        payload.amount = document.getElementById("acc_amount").value;
+        payload.desc = document.getElementById("acc_desc").value;
+        if(!payload.amount) { alert("Amount missing!"); btn.disabled=false; btn.innerText=originalText; return; }
     }
-    // B. CR Data Ready করা
     else if(type === 'cr') {
-        const phone = document.getElementById("cr_phone").value;
-        if(!phone) { alert("Client Phone required!"); btn.innerText = originalText; btn.disabled = false; return; }
-
-        payload = {
-            action: "add_ticket",
-            client: document.getElementById("cr_client").value,
-            phone: phone,
-            issue: document.getElementById("cr_issue").value,
-            user: user.name
-        };
+        payload.action = "add_ticket";
+        payload.client = document.getElementById("cr_client").value;
+        payload.phone = document.getElementById("cr_phone").value;
+        payload.issue = document.getElementById("cr_issue").value;
     }
-    // C. HR Data Ready করা
-    else if(type === 'hr') {
-        const name = document.getElementById("hr_name").value;
-        if(!name) { alert("Name required!"); btn.innerText = originalText; btn.disabled = false; return; }
+    // ... HR data logic here if needed
 
-        payload = {
-            action: "add_employee",
-            name: name,
-            phone: document.getElementById("hr_phone").value,
-            role: document.getElementById("hr_role").value,
-            user: user.name
-        };
-    }
-
-    // ব্যাকএন্ডে ডাটা পাঠানো (POST Request)
-    fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-    })
+    fetch(API_URL, { method: "POST", body: JSON.stringify(payload) })
     .then(res => res.json())
     .then(data => {
-        alert(data.message); // কনফার্মেশন মেসেজ
+        alert(data.message);
         btn.innerText = originalText;
         btn.disabled = false;
-        
-        // সফল হলে পেজ রিফ্রেশ করে নতুন ডাটা দেখানো যেতে পারে (Optional)
-        // location.reload(); 
-    })
-    .catch(err => {
-        alert("Error saving data! Check internet.");
-        console.error(err);
-        btn.innerText = originalText;
-        btn.disabled = false;
+        if(type==='accounts') { document.getElementById("acc_amount").value = ""; } // ফিল্ড ক্লিয়ার
     });
 }
 
-// ৮. লগআউট
-function logout() {
-    localStorage.removeItem("divineUser");
-    location.reload();
-}
+function logout() { localStorage.removeItem("divineUser"); location.reload(); }
