@@ -3,71 +3,59 @@ body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6
 * { box-sizing: border-box; }
 
 /* ২. লগিন স্ক্রিন */
-#login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #2c3e50, #4ca1af); display: flex; justify-content: center; align-items: center; z-index: 2000; }
-.login-box { background: white; padding: 40px; border-radius: 10px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-.login-box input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; outline: none; }
-.login-box button { width: 100%; padding: 12px; background: #2c3e50; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-.login-box button:hover { background: #34495e; }
+#login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2c3e50; display: flex; justify-content: center; align-items: center; z-index: 2000; }
+.login-box { background: white; padding: 40px; border-radius: 8px; width: 90%; max-width: 350px; text-align: center; }
+.login-box input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; }
+.login-box button { width: 100%; padding: 12px; background: #2980b9; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
 
-/* ৩. লেআউট (Sidebar & Main) */
+/* ৩. লেআউট */
 #app-container { display: flex; height: 100vh; overflow: hidden; }
 
 /* সাইডবার */
-.sidebar { width: 250px; background: #2c3e50; color: white; display: flex; flex-direction: column; transition: 0.3s; z-index: 1000; }
+.sidebar { width: 250px; background: #2c3e50; color: white; display: flex; flex-direction: column; transition: 0.3s; }
 .logo { padding: 20px; background: #1a252f; text-align: center; border-bottom: 1px solid #34495e; position: relative; }
 .close-btn { display: none; position: absolute; right: 15px; top: 20px; cursor: pointer; }
 .menu { list-style: none; padding: 0; margin: 0; }
-.menu li { padding: 15px 20px; border-bottom: 1px solid #34495e; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
-.menu li:hover, .menu li.active { background: #3498db; border-left: 4px solid white; }
+.menu li { padding: 15px 20px; border-bottom: 1px solid #34495e; cursor: pointer; transition: 0.2s; }
+.menu li:hover, .menu li.active { background: #3498db; }
 .logout { margin-top: auto; padding: 20px; }
 .logout button { width: 100%; padding: 10px; background: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; }
 
 /* মেইন কন্টেন্ট */
 .main-content { flex: 1; padding: 20px; overflow-y: auto; width: 100%; }
-.section { animation: fadeIn 0.3s ease-in-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ৪. ড্যাশবোর্ড কার্ডস */
+/* কার্ড ডিজাইন */
 .cards { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
-.card { flex: 1; min-width: 240px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; border-left: 5px solid #3498db; }
-.card h1 { margin: 10px 0 0; font-size: 32px; color: #2c3e50; }
-.card p { margin: 0; color: #7f8c8d; font-size: 14px; }
+.card { flex: 1; min-width: 200px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-top: 4px solid #3498db; text-align: center; }
+.card h1 { margin: 10px 0; font-size: 32px; color: #2c3e50; }
 
-/* ৫. টেবিল এবং লিস্ট */
-.table-container { overflow-x: auto; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+/* টেবিল */
+.table-container { overflow-x: auto; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 table { width: 100%; border-collapse: collapse; }
-th { background: #f8f9fa; text-align: left; padding: 12px; font-weight: 600; color: #2c3e50; border-bottom: 2px solid #ddd; }
-td { padding: 12px; border-bottom: 1px solid #eee; color: #555; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+th { background-color: #f8f9fa; color: #2c3e50; }
 tr:hover { background: #f1f2f6; }
 
-/* ৬. বাটন এবং ইনপুট */
-.btn-action { background: #27ae60; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; transition: 0.3s; }
-.btn-action:hover { background: #219150; }
-.btn-call { text-decoration: none; background: #3498db; color: white; padding: 5px 10px; border-radius: 4px; font-size: 12px; }
+/* বাটন ও ইনপুট */
+.btn-action { background: #27ae60; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; display: inline-block; font-size: 14px; }
+.btn-call { background: #3498db; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 12px; }
+input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; }
 
-/* ৭. মারটেক সার্চ বার */
-#martech-search { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; display: flex; gap: 10px; }
-#search-query { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+/* স্পেশাল বক্স (Search & Report) */
+.search-box, .report-box { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+.btn-report { padding: 10px 15px; background: #8e44ad; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px; margin-top: 10px; }
 
-/* ৮. CEO রিপোর্ট গ্রিড */
-.report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
-.btn-report { background: white; border: 1px solid #ddd; padding: 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; text-align: center; color: #2c3e50; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.btn-report:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-color: #3498db; color: #3498db; }
-.btn-report i { font-size: 24px; margin-bottom: 10px; display: block; }
-
-/* ৯. মোবাইল রেস্পন্সিভ */
-.mobile-nav { display: none; background: #2c3e50; color: white; padding: 15px; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+/* মোবাইল */
+.mobile-nav { display: none; background: #2c3e50; color: white; padding: 15px; align-items: center; justify-content: space-between; }
 @media (max-width: 768px) {
     #app-container { flex-direction: column; }
-    .sidebar { position: fixed; left: -260px; top: 0; height: 100%; width: 260px; box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
+    .sidebar { position: fixed; left: -260px; top: 0; height: 100%; width: 260px; z-index: 1000; box-shadow: 2px 0 5px rgba(0,0,0,0.3); }
     .sidebar.active { left: 0; }
     .mobile-nav { display: flex; }
     .close-btn { display: block; }
 }
 
-/* ১০. মডাল */
+/* মডাল */
 .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
-.modal-content { background-color: white; margin: 10% auto; padding: 25px; border-radius: 8px; width: 90%; max-width: 400px; position: relative; animation: slideDown 0.3s; }
-@keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-.close { position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; color: #aaa; }
-.modal input, .modal select, .modal textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; display: block; }
+.modal-content { background-color: white; margin: 15% auto; padding: 25px; border-radius: 8px; width: 90%; max-width: 400px; position: relative; }
+.close { position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; }

@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divine ERP | Ultimate Edition</title>
+    <title>Divine ERP | Official</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-box">
             <h2 style="color:#2c3e50;">👑 Divine ERP</h2>
-            <p>Secure Access Panel</p>
+            <p>Login to Continue</p>
             <input type="text" id="phone" placeholder="Phone Number" required>
             <input type="password" id="password" placeholder="Password" required>
             <button onclick="handleLogin()" id="loginBtn">Login <i class="fas fa-arrow-right"></i></button>
-            <p id="login-msg" style="color:red; font-size:12px; margin-top:10px;"></p>
+            <p id="login-msg"></p>
         </div>
     </div>
 
@@ -30,7 +30,7 @@
         <div class="sidebar" id="sidebar">
             <div class="logo">
                 <h3>Divine ERP</h3>
-                <small id="user-role-display">User: ...</small>
+                <small id="user-role-display" style="color:#bdc3c7;">User: ...</small>
                 <i class="fas fa-times close-btn" onclick="toggleMenu()"></i>
             </div>
             
@@ -45,73 +45,54 @@
         <div class="main-content">
             
             <div id="dashboard" class="section">
-                <h1>📊 Executive Overview</h1>
+                <h1>📊 Dashboard Overview</h1>
 
-                <div id="martech-search" style="display:none; margin-bottom:25px; background: #000; padding: 15px; border: 1px solid #00ff41; border-radius: 5px;">
-                    <h4 style="color: #00ff41; margin-top: 0;">>> SPY_SEARCH_ENGINE_V1.0</h4>
+                <div id="martech-search" class="search-box" style="display:none;">
+                    <h3>🕵️‍♂️ Lead Search</h3>
                     <div style="display:flex; gap:10px;">
-                        <input type="text" id="search-query" placeholder="Enter Phone or Name..." style="background: #111; color: #00ff41; border: 1px solid #333;">
-                        <button onclick="searchLead()" style="background: #00ff41; color: black; font-weight:bold; border:none; width: 100px;">SEARCH</button>
+                        <input type="text" id="search-query" placeholder="Enter Name or Phone...">
+                        <button onclick="searchLead()" class="btn-action">Search</button>
                     </div>
-                    <div id="search-results" style="margin-top:10px; color: #00ff41; font-family: monospace;"></div>
+                    <div id="search-results"></div>
+                </div>
+
+                <div id="ceo-reports" class="report-box" style="display:none;">
+                    <h3>📥 Download Reports</h3>
+                    <div class="btn-group">
+                        <button class="btn-report" onclick="alert('Sales Report Downloading...')"><i class="fas fa-file-pdf"></i> Sales</button>
+                        <button class="btn-report" onclick="alert('Accounts Report Downloading...')"><i class="fas fa-file-excel"></i> Accounts</button>
+                        <button class="btn-report" onclick="alert('HR Report Downloading...')"><i class="fas fa-users"></i> HR List</button>
+                    </div>
                 </div>
 
                 <div class="cards" id="stats-cards">
-                    <div class="card"><h3>Loading Data...</h3></div>
-                </div>
-
-                <div id="ceo-reports" style="display:none; margin-top:30px;">
-                    <h2 style="border-bottom: 2px solid rgba(255,255,255,0.2); padding-bottom: 10px; margin-bottom: 20px;">📥 Corporate Reports Center</h2>
-                    <div class="report-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
-                        <button class="btn-report" onclick="downloadReport('Sales')">
-                            <i class="fas fa-chart-line fa-2x"></i><br>Sales Report (PDF)
-                        </button>
-                        <button class="btn-report" onclick="downloadReport('Accounts')">
-                            <i class="fas fa-file-invoice-dollar fa-2x"></i><br>Accounts Statement
-                        </button>
-                        <button class="btn-report" onclick="downloadReport('HR')">
-                            <i class="fas fa-users fa-2x"></i><br>HR & Attendance
-                        </button>
-                        <button class="btn-report" onclick="downloadReport('CR')">
-                            <i class="fas fa-hand-holding-usd fa-2x"></i><br>Collection & Due
-                        </button>
-                        <button class="btn-report" onclick="downloadReport('Marketing')">
-                            <i class="fas fa-bullhorn fa-2x"></i><br>Marketing ROI
-                        </button>
-                    </div>
+                    <div class="card"><h3>Loading...</h3></div>
                 </div>
             </div>
 
             <div id="leads-panel" class="section" style="display:none;">
                 <h1>📞 Lead Management</h1>
-                <button class="btn-action" onclick="showModal('lead-modal')"><i class="fas fa-plus"></i> Add New Lead</button>
+                <button class="btn-action" onclick="showModal('lead-modal')">+ Add New Lead</button>
                 
                 <div class="table-container">
                     <table id="leads-table">
                         <thead>
                             <tr>
-                                <th>Client Name</th>
+                                <th>Name</th>
                                 <th>Phone</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
 
             <div id="bill-panel" class="section" style="display:none;">
-                <h1>💰 Bill & Approval System</h1>
-                <button class="btn-action" onclick="showModal('bill-modal')"><i class="fas fa-paper-plane"></i> Submit New Bill</button>
-                <div id="bill-list" style="margin-top: 20px;">
-                    </div>
-            </div>
-
-            <div id="admin-panel" class="section" style="display:none;">
-                <h1>⚙️ System Settings</h1>
-                <p>User Role Management & System Config.</p>
+                <h1>💰 Bill & Accounts</h1>
+                <button class="btn-action" onclick="showModal('bill-modal')">+ Submit Bill</button>
+                <div id="bill-list" style="margin-top:20px;"></div>
             </div>
 
         </div>
@@ -120,44 +101,34 @@
     <div id="lead-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('lead-modal')">&times;</span>
-            <h3><i class="fas fa-user-plus"></i> Add New Lead</h3>
+            <h3>Add New Lead</h3>
             <input type="text" id="lead_name" placeholder="Client Name">
-            <input type="text" id="lead_phone" placeholder="Phone Number (017...)" maxlength="11">
-            <label>Source:</label>
+            <input type="text" id="lead_phone" placeholder="Phone Number">
             <select id="lead_source">
-                <option value="Facebook">Facebook Ads</option>
-                <option value="Referral">Referral (Old Client)</option>
+                <option value="Facebook">Facebook</option>
+                <option value="Referral">Referral</option>
                 <option value="Cold Call">Cold Call</option>
-                <option value="Walk-in">Office Visit</option>
             </select>
-            <button class="btn-action" onclick="saveData('lead')" style="width:100%; margin-top:10px;">Save Lead</button>
+            <button class="btn-action" style="width:100%" onclick="saveData('lead')">Save</button>
         </div>
     </div>
 
     <div id="bill-modal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('bill-modal')">&times;</span>
-            <h3><i class="fas fa-file-invoice"></i> Submit Expense Bill</h3>
-            <input type="text" id="bill_purpose" placeholder="Purpose (e.g. Facebook Boosting)">
-            <input type="number" id="bill_amount" placeholder="Amount (Tk)">
-            <textarea id="bill_desc" placeholder="Details description..." rows="3"></textarea>
-            <button class="btn-action" onclick="saveData('bill')" style="width:100%; margin-top:10px;">Submit for Approval</button>
+            <h3>Submit Bill</h3>
+            <input type="text" id="bill_purpose" placeholder="Purpose">
+            <input type="number" id="bill_amount" placeholder="Amount">
+            <textarea id="bill_desc" placeholder="Details..."></textarea>
+            <button class="btn-action" style="width:100%" onclick="saveData('bill')">Submit</button>
         </div>
     </div>
 
     <script src="app.js"></script>
     <script>
-        // ছোটখাটো UI ফাংশন (মেনু টগল, মডাল ওপেন/ক্লোজ)
         function toggleMenu() { document.getElementById("sidebar").classList.toggle("active"); }
         function showModal(id) { document.getElementById(id).style.display = "block"; }
         function closeModal(id) { document.getElementById(id).style.display = "none"; }
-        
-        // মডালের বাইরে ক্লিক করলে বন্ধ হবে
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = "none";
-            }
-        }
     </script>
 </body>
 </html>
