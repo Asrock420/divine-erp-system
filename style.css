@@ -1,0 +1,27 @@
+/* বেসিক রিসেট */
+body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; height: 100vh; background-color: #f4f7f6; }
+
+/* সাইডবার (বাম পাশ) */
+.sidebar { width: 250px; background-color: #2c3e50; color: white; display: flex; flex-direction: column; }
+.logo { padding: 20px; text-align: center; background-color: #1a252f; }
+.menu { list-style: none; padding: 0; margin: 0; }
+.menu li { padding: 15px 20px; border-bottom: 1px solid #34495e; cursor: pointer; transition: 0.3s; }
+.menu li:hover, .menu li.active { background-color: #3498db; }
+.menu li i { margin-right: 10px; width: 20px; }
+.logout { margin-top: auto; padding: 20px; }
+.logout button { width: 100%; padding: 10px; background: #e74c3c; border: none; color: white; cursor: pointer; border-radius: 5px; }
+
+/* মেইন কন্টেন্ট (ডান পাশ) */
+.main-content { flex: 1; padding: 20px; overflow-y: auto; }
+header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+/* কার্ড ডিজাইন (ড্যাশবোর্ড) */
+.cards { display: flex; gap: 20px; }
+.card { flex: 1; padding: 20px; border-radius: 8px; color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.card-1 { background: linear-gradient(45deg, #6a11cb, #2575fc); } /* CRM Color */
+.card-2 { background: linear-gradient(45deg, #11998e, #38ef7d); } /* HR Color */
+.card-3 { background: linear-gradient(45deg, #ff9966, #ff5e62); } /* Accounts Color */
+
+/* সেকশন কন্ট্রোল */
+.section { animation: fadeIn 0.5s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
