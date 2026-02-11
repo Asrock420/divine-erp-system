@@ -3,63 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divine ERP & CRM | All-in-One Solution</title>
+    <title>Divine ERP | All-in-One Solution</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
-    <div class="sidebar">
-        <div class="logo">
-            <h2>👑 Divine ERP</h2>
-        </div>
-        <ul class="menu">
-            <li onclick="showSection('dashboard')" class="active"><i class="fas fa-home"></i> Dashboard</li>
-            <li onclick="showSection('crm')"><i class="fas fa-users"></i> CRM (Sales)</li>
-            <li onclick="showSection('hr')"><i class="fas fa-user-tie"></i> HRM (Staff)</li>
-            <li onclick="showSection('accounts')"><i class="fas fa-calculator"></i> Accounts</li>
-            <li onclick="showSection('inventory')"><i class="fas fa-boxes"></i> Inventory</li>
-            <li onclick="showSection('settings')"><i class="fas fa-cogs"></i> Settings</li>
-        </ul>
-        <div class="logout">
-            <button><i class="fas fa-sign-out-alt"></i> Logout</button>
+    <div id="login-screen">
+        <div class="login-box">
+            <h2 style="color:#2c3e50;">👑 Divine ERP</h2>
+            <p>Secure Login System</p>
+            <input type="text" id="phone" placeholder="Phone Number (e.g. 017...)" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button onclick="handleLogin()" id="loginBtn">Login <i class="fas fa-arrow-right"></i></button>
+            <p id="login-msg" style="color:red; font-size:12px; margin-top:10px;"></p>
         </div>
     </div>
 
-    <div class="main-content">
+    <div id="app-container" style="display:none;">
         
-        <header>
-            <h3>Welcome, Admin</h3>
-            <div class="status-dot online"></div>
-        </header>
-
-        <div id="dashboard" class="section">
-            <h1>📊 Company Overview</h1>
-            <div class="cards">
-                <div class="card card-1"><h3>Total Leads</h3><h1>120</h1></div>
-                <div class="card card-2"><h3>Total Employees</h3><h1>15</h1></div>
-                <div class="card card-3"><h3>This Month Sales</h3><h1>৳ 50k</h1></div>
+        <div class="sidebar">
+            <div class="logo">
+                <h3>Divine Group</h3>
+                <small id="user-role-display">Role: ...</small>
+            </div>
+            <ul class="menu" id="sidebar-menu">
+                </ul>
+            <div class="logout">
+                <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
             </div>
         </div>
 
-        <div id="crm" class="section" style="display:none;">
-            <h1>🤝 CRM Automation</h1>
-            <p>Leads and Sales Management will be here.</p>
+        <div class="main-content">
+            <header>
+                <h3 id="welcome-msg">Welcome</h3>
+                <div class="status-dot online"></div>
+            </header>
+
+            <div id="dashboard" class="section">
+                <h1>📊 Dashboard Overview</h1>
+                <div class="cards" id="stats-cards">
+                    <div class="card"><h3>Loading data...</h3></div>
+                </div>
             </div>
 
-        <div id="hr" class="section" style="display:none;">
-            <h1>👔 HR Management</h1>
-            <p>Employee Attendance and Salary list.</p>
-        </div>
+            <div id="crm" class="section" style="display:none;">
+                <h1>🤝 CRM (Sales)</h1>
+                <p>Leads Management Module.</p>
+            </div>
 
-        <div id="accounts" class="section" style="display:none;">
-            <h1>💰 Accounts & Billing</h1>
-            <p>Income, Expense and Invoices.</p>
-        </div>
+            <div id="hr" class="section" style="display:none;">
+                <h1>👔 HR Management</h1>
+                <p>Employee List & Attendance.</p>
+            </div>
 
+            <div id="accounts" class="section" style="display:none;">
+                <h1>💰 Accounts</h1>
+                <p>Income & Expense.</p>
+            </div>
+            
+            <div id="admin_assets" class="section" style="display:none;"><h1>💻 Admin Assets</h1></div>
+             <div id="logistic" class="section" style="display:none;"><h1>🚚 Logistics</h1></div>
+             <div id="cr" class="section" style="display:none;"><h1>🎧 CR Ticket</h1></div>
+
+        </div>
     </div>
 
     <script src="app.js"></script>
-
 </body>
 </html>
