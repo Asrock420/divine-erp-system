@@ -1,12 +1,19 @@
-// ✅ তোমার দেওয়া লেটেস্ট লিংক
+// ✅ তোমার দেওয়া লেটেস্ট ব্যাকএন্ড লিংক
 const API_URL = "https://script.google.com/macros/s/AKfycbxVi7QepVy-va6AV2kXSNhVH1elrS8Z_TUgdpd8gSAnBmgSApWhpn0eClfkeZBJyRn5CA/exec";
 
+// অ্যাপ স্টার্ট হলে লগিন চেক
 window.onload = function() {
     const user = JSON.parse(localStorage.getItem("divineUser"));
-    if(user) showApp(user);
+    if(user) {
+        showApp(user);
+    } else {
+        // ইউজার না থাকলে লগিন স্ক্রিন দেখাবে
+        document.getElementById("login-screen").style.display = "flex";
+        document.getElementById("app-container").style.display = "none";
+    }
 };
 
-// ১. মেনু রেন্ডার (Accounts & Admin সহ)
+// ১. মেনু রেন্ডার
 function renderMenu(user) {
     const menu = document.getElementById("sidebar-menu");
     let html = `<li onclick="showSection('dashboard')" class="active"><i class="fas fa-home"></i> Dashboard</li>`;
@@ -17,22 +24,15 @@ function renderMenu(user) {
             <li onclick="showSection('leads-panel'); loadLeads();"><i class="fas fa-users"></i> All Leads</li>
             <li onclick="showSection('bill-panel'); loadBills();"><i class="fas fa-check-double"></i> Approvals</li>
         `;
-        // রোল অনুযায়ী স্পেশাল ফিচার অন করা
-        if(user.role === 'Martech') {
-            const searchBox = document.getElementById("martech-search");
-            if(searchBox) searchBox.style.display = 'block';
-        }
-        if(user.role === 'CEO') {
-            const reportBox = document.getElementById("ceo-reports");
-            if(reportBox) reportBox.style.display = 'block';
-        }
+        if(user.role === 'Martech') document.getElementById("martech-search").style.display = 'block';
+        if(user.role === 'CEO') document.getElementById("ceo-reports").style.display = 'block';
     }
     
     // 🔥 Accounts স্পেশাল মেনু
     else if(user.role === 'Accounts') {
         html += `
-            <li onclick="showModal('income-modal')"><i class="fas fa-plus-circle" style="color:lightgreen;"></i> Add Income</li>
-            <li onclick="showModal('expense-modal')"><i class="fas fa-minus-circle" style="color:#ffcccb;"></i> Add Expense</li>
+            <li onclick="showModal('income-modal')"><i class="fas fa-plus-circle" style="color:green;"></i> Add Income</li>
+            <li onclick="showModal('expense-modal')"><i class="fas fa-minus-circle" style="color:red;"></i> Add Expense</li>
             <li onclick="showSection('bill-panel'); loadBills();"><i class="fas fa-money-check-alt"></i> Disbursement</li>
         `;
     }
@@ -45,13 +45,13 @@ function renderMenu(user) {
     menu.innerHTML = html;
 }
 
-// ২. ড্যাশবোর্ড স্ট্যাটস (আয়-ব্যয় লাইভ দেখাবে)
+// ২. ড্যাশবোর্ড স্ট্যাটস
 function loadStats(user) {
     const cardsDiv = document.getElementById("stats-cards");
     
     // Accounts, Admin, CEO রা রিয়েল হিসাব দেখবে
     if(['Accounts', 'Admin', 'CEO'].includes(user.role)) {
-        cardsDiv.innerHTML = `<div class="card"><h3>Loading Data...</h3></div>`;
+        cardsDiv.innerHTML = `<div class="card"><h3>Loading...</h3></div>`;
         
         fetch(`${API_URL}?action=getStats&role=${user.role}`)
         .then(res => res.json())
@@ -71,7 +71,6 @@ function loadStats(user) {
             }
         });
     } else {
-        // Sales Staff View
         cardsDiv.innerHTML = `
             <div class="card"><h1>0</h1><p>Today's Call</p></div>
             <div class="card"><h1>0</h1><p>Pending Leads</p></div>
@@ -79,7 +78,7 @@ function loadStats(user) {
     }
 }
 
-// ৩. ইনকাম/এক্সপেন্স সেভ করা (নতুন)
+// ৩. ইনকাম/এক্সপেন্স সেভ
 function saveAccountEntry(type) {
     const user = JSON.parse(localStorage.getItem("divineUser"));
     let amount, category, desc;
@@ -97,7 +96,6 @@ function saveAccountEntry(type) {
     if(!amount) return alert("Please enter amount!");
 
     const btn = event.target;
-    const originalText = btn.innerText;
     btn.innerText = "Saving...";
     btn.disabled = true;
 
@@ -115,20 +113,15 @@ function saveAccountEntry(type) {
     .then(res => res.json())
     .then(data => {
         alert(data.message);
-        btn.innerText = originalText;
+        btn.innerText = `Save ${type}`;
         btn.disabled = false;
         if(data.status === "success") {
             closeModal(`${type.toLowerCase()}-modal`);
             // ফিল্ড ক্লিয়ার
             if(type==='Income') document.getElementById("inc_amount").value = "";
             if(type==='Expense') document.getElementById("exp_amount").value = "";
-            loadStats(user); // সাথে সাথে ব্যালেন্স আপডেট
+            loadStats(user);
         }
-    })
-    .catch(err => {
-        alert("Error saving data!");
-        btn.innerText = originalText;
-        btn.disabled = false;
     });
 }
 
@@ -148,7 +141,7 @@ function loadBills() {
                 let btnColor = "green";
                 
                 if(user.role === 'Accounts') {
-                    btnText = "Disburse Pay"; // একাউন্টস টাকা দেবে
+                    btnText = "Disburse"; // একাউন্টস টাকা দেবে
                     btnColor = "#2980b9";
                 }
 
@@ -170,7 +163,7 @@ function loadBills() {
     });
 }
 
-// ৫. বিল অ্যাকশন (Approve/Reject)
+// ৫. বিল অ্যাকশন
 function approveBill(billId, status) {
     const user = JSON.parse(localStorage.getItem("divineUser"));
     if(!confirm(`Confirm ${status}?`)) return;
@@ -186,7 +179,7 @@ function approveBill(billId, status) {
     });
 }
 
-// ৬. লিড লোড (আগের মতোই)
+// ৬. লিড লোড
 function loadLeads() {
     const user = JSON.parse(localStorage.getItem("divineUser"));
     const tbody = document.querySelector("#leads-table tbody");
@@ -241,7 +234,7 @@ function searchLead() {
     });
 }
 
-// ৮. লগিন ও অন্যান্য
+// ৮. লগিন ফাংশন
 function handleLogin() {
     const phone = document.getElementById("phone").value;
     const pass = document.getElementById("password").value;
@@ -264,6 +257,7 @@ function handleLogin() {
     .catch(e => { alert("Connection Error"); btn.innerText = "Login"; });
 }
 
+// অ্যাপ দেখানো
 function showApp(user) {
     document.getElementById("login-screen").style.display = "none";
     document.getElementById("app-container").style.display = "flex";
@@ -273,6 +267,7 @@ function showApp(user) {
     showSection('dashboard');
 }
 
+// সেকশন পরিবর্তন
 function showSection(id) {
     document.querySelectorAll('.section').forEach(d => d.style.display = 'none');
     const target = document.getElementById(id);
@@ -280,7 +275,8 @@ function showSection(id) {
     if(window.innerWidth < 768) document.getElementById("sidebar").classList.remove("active");
 }
 
-function saveData(type) { /* Lead & Bill Submit Logic - আগের মতো */ 
+// ডাটা সেভ (Lead/Bill)
+function saveData(type) {
     const user = JSON.parse(localStorage.getItem("divineUser"));
     const btn = event.target;
     
@@ -312,4 +308,5 @@ function saveData(type) { /* Lead & Bill Submit Logic - আগের মতো *
         }
     });
 }
+
 function logout() { localStorage.removeItem("divineUser"); location.reload(); }
