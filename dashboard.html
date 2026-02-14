@@ -44,12 +44,17 @@
         <input type="date" id="follow_up_date">
         <textarea id="remarks" placeholder="Remarks"></textarea>
 
+        <label>Manual Assign (Optional)</label>
+        <select id="assigned_to_dropdown">
+          <option value="">Auto Assign (Round Robin)</option>
+        </select>
+
         <button onclick="addLead()">Save Lead</button>
       </div>
 
       <div class="card">
         <h3>Lead List</h3>
-        <table border="1" width="100%">
+        <table width="100%">
           <thead>
             <tr>
               <th>Name</th>
@@ -62,20 +67,17 @@
           <tbody id="leadTable"></tbody>
         </table>
       </div>
+
     </div>
 
   </div>
 </div>
 
-<!-- Absolute JS Path -->
-<script src="https://asrock420.github.io/divine-erp-system/app.js"></script>
-
 <script>
-const user = JSON.parse(sessionStorage.getItem("user"));
+const BASE_URL = "https://script.google.com/macros/s/AKfycbzvPMZKRx9kqG92dZ1XnfnaH6u2qEiiJInMq-OUB-0KMEyXllHkYh-XkjJYOypmbrn2/exec";
 
-if(!user){
-  window.location.href = "index.html";
-}
+const user = JSON.parse(sessionStorage.getItem("user"));
+if(!user){ window.location.href = "index.html"; }
 
 document.getElementById("userInfo").innerText =
   "Logged in as: " + user.name + " (" + user.role + ")";
@@ -94,6 +96,69 @@ function showLeads(){
   document.getElementById("dashboardSection").style.display = "none";
   document.getElementById("leadSection").style.display = "block";
   loadLeads();
+  loadSalesUsers();
+}
+
+function loadSalesUsers(){
+  fetch(BASE_URL,{
+    method:"POST",
+    body: JSON.stringify({action:"getSalesUsers"})
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    const dropdown = document.getElementById("assigned_to_dropdown");
+    dropdown.innerHTML = '<option value="">Auto Assign (Round Robin)</option>';
+    data.forEach(user=>{
+      dropdown.innerHTML += `<option value="${user}">${user}</option>`;
+    });
+  });
+}
+
+function addLead(){
+
+  fetch(BASE_URL,{
+    method:"POST",
+    body: JSON.stringify({
+      action:"addLead",
+      client_name: document.getElementById("client_name").value,
+      phone: document.getElementById("phone").value,
+      project: document.getElementById("project").value,
+      unit_type: document.getElementById("unit_type").value,
+      budget: document.getElementById("budget").value,
+      source: document.getElementById("source").value,
+      follow_up_date: document.getElementById("follow_up_date").value,
+      remarks: document.getElementById("remarks").value,
+      manual_assign: document.getElementById("assigned_to_dropdown").value,
+      created_by: user.name
+    })
+  })
+  .then(res=>res.json())
+  .then(()=>{
+    alert("Lead Saved");
+    loadLeads();
+  });
+}
+
+function loadLeads(){
+  fetch(BASE_URL,{
+    method:"POST",
+    body: JSON.stringify({action:"getLeads"})
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    const table = document.getElementById("leadTable");
+    table.innerHTML="";
+    data.forEach(lead=>{
+      table.innerHTML+=`
+        <tr>
+          <td>${lead.client_name}</td>
+          <td>${lead.phone}</td>
+          <td>${lead.project}</td>
+          <td>${lead.status}</td>
+          <td>${lead.assigned_to}</td>
+        </tr>`;
+    });
+  });
 }
 </script>
 
