@@ -1,154 +1,23 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Divine ERP v6.0</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <title>Divine ERP Login</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-box">
-            <h2 style="color:#2c3e50;">👑 Divine Group</h2>
-            <p>ERP Login</p>
-            <input type="text" id="phone" placeholder="Phone Number">
-            <input type="password" id="password" placeholder="Password">
-            <button onclick="handleLogin()" id="loginBtn">Login <i class="fas fa-arrow-right"></i></button>
-        </div>
-    </div>
+<div class="login-box">
+  <h2>Divine ERP</h2>
 
-    <div id="app-container" style="display:none;">
-        <div class="mobile-nav">
-            <i class="fas fa-bars" onclick="toggleMenu()"></i>
-            <h3>Divine ERP</h3>
-        </div>
+  <input type="email" id="email" placeholder="Enter Email">
+  <input type="password" id="password" placeholder="Enter Password">
 
-        <div class="sidebar" id="sidebar">
-            <div class="logo">
-                <h3>Divine Group</h3>
-                <small id="user-role-display">...</small>
-                <i class="fas fa-times close-btn" onclick="toggleMenu()"></i>
-            </div>
-            <ul class="menu" id="sidebar-menu"></ul>
-            <div class="logout"><button onclick="logout()">Logout</button></div>
-        </div>
+  <button onclick="login()">Login</button>
+  <button class="secondary" onclick="createTestUser()">Create Test User (One Time Only)</button>
 
-        <div class="main-content">
-            <div id="dashboard" class="section">
-                <h1>📊 Executive Dashboard</h1>
-                
-                <div id="ceo-visuals" style="display:none; margin-bottom:20px;">
-                    <h3>📂 Project Realization Status</h3>
-                    <div class="cards" id="project-cards"></div>
-                    <div class="report-box" style="margin-top:20px;">
-                        <h3>📥 Reports Center</h3>
-                        <button class="btn-report" onclick="alert('Generating Sales Report...')">Sales Report</button>
-                        <button class="btn-report" onclick="alert('Generating Accounts Report...')">Accounts</button>
-                        <button class="btn-report" onclick="alert('Generating CR Report...')">CR & Collection</button>
-                        <button class="btn-report" onclick="alert('Generating HR Report...')">HR & Admin</button>
-                    </div>
-                </div>
+  <p id="error" class="error"></p>
+</div>
 
-                <div class="cards" id="stats-cards"></div>
-            </div>
-
-            <div id="leads-panel" class="section" style="display:none;">
-                <h1>📞 Leads</h1>
-                <div id="add-lead-btn-wrapper">
-                    <button class="btn-action" onclick="showModal('lead-modal')">+ Add Lead</button>
-                </div>
-                <div class="table-container">
-                    <table id="leads-table"><thead><tr><th>Name</th><th>Phone</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table>
-                </div>
-            </div>
-
-            <div id="bill-panel" class="section" style="display:none;">
-                <h1 id="bill-title">💰 Requisitions</h1>
-                <button class="btn-action" onclick="showModal('bill-modal')">+ Create Request</button>
-                <div id="bill-list" style="margin-top:20px;"></div>
-            </div>
-
-            <div id="cr-panel" class="section" style="display:none;">
-                <h1>🎧 Credit Realization</h1>
-                <button class="btn-action" onclick="showModal('cr-modal')" style="background:#8e44ad;">+ New Collection Entry</button>
-                <div class="cards">
-                    <div class="card">
-                        <h1 id="cr-total-today">৳0</h1>
-                        <p>Total Realized (System)</p>
-                    </div>
-                </div>
-                <h3>Client Due List</h3>
-                <div class="table-container">
-                    <table>
-                        <thead><tr><th>Client</th><th>Project</th><th>Status</th><th>Action</th></tr></thead>
-                        <tbody><tr><td colspan="4">Loading data...</td></tr></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="lead-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('lead-modal')">&times;</span>
-            <h3>Add Lead</h3>
-            <input type="text" id="lead_name" placeholder="Name">
-            <input type="text" id="lead_phone" placeholder="Phone">
-            <button class="btn-action" style="width:100%" onclick="saveData('lead')">Save</button>
-        </div>
-    </div>
-
-    <div id="bill-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('bill-modal')">&times;</span>
-            <h3>Submit Requisition</h3>
-            <input type="text" id="bill_purpose" placeholder="Purpose (e.g. TA/DA)">
-            <input type="number" id="bill_amount" placeholder="Amount">
-            <textarea id="bill_desc" placeholder="Details..."></textarea>
-            <button class="btn-action" style="width:100%" onclick="saveData('bill')">Submit</button>
-        </div>
-    </div>
-
-    <div id="cr-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('cr-modal')">&times;</span>
-            <h3 style="color:#8e44ad;">💰 Collection Entry</h3>
-            <input type="text" id="cr_client" placeholder="Client / File No">
-            <select id="cr_project">
-                <option value="Cox Holiday Inn">Cox Holiday Inn</option>
-                <option value="Divine Purbachal City">Divine Purbachal City</option>
-                <option value="Commercial Space">Commercial Space</option>
-                <option value="Divine Elite Residence">Divine Elite Residence</option>
-                <option value="Divine Care Hospital">Divine Care Hospital</option>
-            </select>
-            <input type="number" id="cr_amount" placeholder="Amount">
-            <select id="cr_type">
-                <option value="Cash">Cash</option>
-                <option value="Cheque">Cheque</option>
-                <option value="Bank">Bank Transfer</option>
-            </select>
-            <button class="btn-action" style="background:#8e44ad; width:100%" onclick="saveData('cr')">Save</button>
-        </div>
-    </div>
-
-    <div id="expense-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('expense-modal')">&times;</span>
-            <h3 style="color:red;">Add Expense</h3>
-            <input type="number" id="exp_amount" placeholder="Amount">
-            <input type="text" id="exp_desc" placeholder="Details">
-            <button class="btn-action" style="background:red; width:100%" onclick="saveData('expense')">Save</button>
-        </div>
-    </div>
-
-    <script src="app.js"></script>
-    <script>
-        function toggleMenu() { document.getElementById("sidebar").classList.toggle("active"); }
-        function showModal(id) { document.getElementById(id).style.display = "block"; }
-        function closeModal(id) { document.getElementById(id).style.display = "none"; }
-        window.onclick = function(e) { if(e.target.classList.contains('modal')) e.target.style.display="none"; }
-    </script>
+<script src="app.js"></script>
 </body>
 </html>
