@@ -6,24 +6,68 @@
 </head>
 <body>
 
-<div class="login-box">
-  <h2>Dashboard</h2>
+<div class="layout">
 
-  <p id="userInfo"></p>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Divine ERP</h2>
+    <ul id="menuList">
+      <li data-role="ALL">Dashboard</li>
+      <li data-role="Sales,TL,Admin">Leads</li>
+      <li data-role="Sales,TL">Requisitions</li>
+      <li data-role="Admin">User Management</li>
+      <li data-role="Accounts">Accounts</li>
+      <li data-role="CEO">Executive Reports</li>
+    </ul>
+    <button onclick="logout()">Logout</button>
+  </div>
 
-  <button onclick="logout()">Logout</button>
+  <!-- Main Content -->
+  <div class="main">
+    <h1>Dashboard</h1>
+    <p id="userInfo"></p>
+
+    <div class="card-container">
+      <div class="card">
+        <h3>Welcome</h3>
+        <p>This is your secure ERP control panel.</p>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
 
 const user = JSON.parse(sessionStorage.getItem("user"));
 
+// 🔐 Route Guard
 if(!user){
   window.location.href = "index.html";
-} else {
-  document.getElementById("userInfo").innerText =
-    "Logged in as: " + user.name + " (" + user.role + ")";
 }
+
+// Show User Info
+document.getElementById("userInfo").innerText =
+  "Logged in as: " + user.name + " (" + user.role + ")";
+
+
+// 🔥 Role Based Menu Control
+const menuItems = document.querySelectorAll("#menuList li");
+
+menuItems.forEach(item => {
+
+  const allowedRoles = item.getAttribute("data-role");
+
+  if(allowedRoles !== "ALL") {
+
+    const rolesArray = allowedRoles.split(",");
+
+    if(!rolesArray.includes(user.role)){
+      item.style.display = "none";
+    }
+  }
+});
+
 
 function logout(){
   sessionStorage.clear();
