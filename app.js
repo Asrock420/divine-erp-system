@@ -1,56 +1,98 @@
-const BASE_URL = "https://script.google.com/macros/s/AKfycbzvPMZKRx9kqG92dZ1XnfnaH6u2qEiiJInMq-OUB-0KMEyXllHkYh-XkjJYOypmbrn2/exec";
+const BASE_URL="https://script.google.com/macros/s/AKfycbzL8GoZ3pySX9XPHIOVaFw4xm_wdlTlV2ngFEpPN7-qvugGsopJBOyS1Pzr_j3-ZnDt/exec";
 
-function addLead(){
+function login(){
+const email=document.getElementById("email").value;
+const password=document.getElementById("password").value;
 
-  const user = JSON.parse(sessionStorage.getItem("user"));
-
-  fetch(BASE_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "addLead",
-      client_name: document.getElementById("client_name").value,
-      phone: document.getElementById("phone").value,
-      project: document.getElementById("project").value,
-      unit_type: document.getElementById("unit_type").value,
-      budget: document.getElementById("budget").value,
-      source: document.getElementById("source").value,
-      follow_up_date: document.getElementById("follow_up_date").value,
-      remarks: document.getElementById("remarks").value,
-      created_by: user.name
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-    alert("Lead Saved");
-    loadLeads();
-  });
+fetch(BASE_URL,{
+method:"POST",
+body:JSON.stringify({
+action:"login",
+email:email,
+password:password
+})
+})
+.then(res=>res.json())
+.then(data=>{
+if(data.success){
+sessionStorage.setItem("user",JSON.stringify(data.user));
+window.location.href="dashboard.html";
+}else{
+alert("Login Failed");
+}
+});
 }
 
-function loadLeads(){
+if(window.location.pathname.includes("dashboard")){
+const user=JSON.parse(sessionStorage.getItem("user"));
+if(!user){
+window.location.href="index.html";
+}else{
+loadSummary();
+}
+}
 
-  fetch(BASE_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "getLeads"
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
+function logout(){
+sessionStorage.clear();
+window.location.href="index.html";
+}
 
-    const table = document.getElementById("leadTable");
-    table.innerHTML = "";
+function showSection(id){
+document.querySelectorAll(".section").forEach(sec=>{
+sec.classList.add("hidden");
+});
+document.getElementById(id).classList.remove("hidden");
 
-    data.forEach(lead => {
-      table.innerHTML += `
-        <tr>
-          <td>${lead.client_name}</td>
-          <td>${lead.phone}</td>
-          <td>${lead.project}</td>
-          <td>${lead.status}</td>
-          <td>${lead.assigned_to}</td>
-        </tr>
-      `;
-    });
+if(id==="dashboard") loadSummary();
+if(id==="installments") loadInstallments();
+}
 
-  });
+function loadSummary(){
+fetch(BASE_URL,{
+method:"POST",
+body:JSON.stringify({action:"getFinancialSummary"})
+})
+.then(res=>res.json())
+.then(d=>{
+document.getElementById("revenue").innerText=d.revenue || 0;
+document.getElementById("outstanding").innerText=d.outstanding || 0;
+document.getElementById("overdue").innerText=d.overdue || 0;
+});
+}
+
+function loadInstallments(){
+fetch(BASE_URL,{
+method:"POST",
+body:JSON.stringify({action:"getInstallments"})
+})
+.then(res=>res.json())
+.then(data=>{
+const table=document.getElementById("installmentTable");
+table.innerHTML="";
+data.forEach(i=>{
+table.innerHTML+=`
+<tr>
+<td>${i.client}</td>
+<td>${i.total}</td>
+<td>${i.paid}</td>
+<td>${i.due}</td>
+<td>${i.status}</td>
+<td><button onclick="payInstallment('${i.id}')">Pay</button></td>
+</tr>`;
+});
+});
+}
+
+function payInstallment(id){
+let amount=prompt("Enter Payment Amount:");
+if(!amount) return;
+
+fetch(BASE_URL,{
+method:"POST",
+body:JSON.stringify({
+action:"addPayment",
+id:id,
+amount:amount
+})
+}).then(()=>loadInstallments());
 }

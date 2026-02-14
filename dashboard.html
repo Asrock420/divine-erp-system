@@ -7,33 +7,52 @@
 </head>
 <body>
 
-<div class="layout">
+<div class="wrapper">
 
 <div class="sidebar">
 <h2>Divine ERP</h2>
+
 <ul>
-<li onclick="showDashboard()">Dashboard</li>
-<li onclick="showInstallments()">Installments</li>
-<li onclick="showPayroll()">Payroll</li>
-<li onclick="showProjects()">Projects</li>
+<li onclick="showSection('dashboard')" class="active">Dashboard</li>
+<li onclick="showSection('installments')">Installments</li>
+<li onclick="showSection('projects')">Projects</li>
+<li onclick="showSection('payroll')">Payroll</li>
 </ul>
+
 <button onclick="logout()">Logout</button>
 </div>
 
 <div class="main">
 
-<!-- ================= DASHBOARD ================= -->
-<div id="dashboardSection">
+<!-- DASHBOARD -->
+<div id="dashboard" class="section">
 <h1>Financial Overview</h1>
-<div id="summaryCards"></div>
+
+<div class="kpi-container">
+<div class="kpi green">
+<h3>Total Revenue</h3>
+<p id="revenue">0</p>
 </div>
 
-<!-- ================= INSTALLMENTS ================= -->
-<div id="installmentSection" style="display:none;">
+<div class="kpi orange">
+<h3>Outstanding</h3>
+<p id="outstanding">0</p>
+</div>
+
+<div class="kpi red">
+<h3>Overdue</h3>
+<p id="overdue">0</p>
+</div>
+</div>
+
+</div>
+
+<!-- INSTALLMENTS -->
+<div id="installments" class="section hidden">
 <h1>Installments</h1>
 
 <div class="card">
-<table width="100%">
+<table>
 <thead>
 <tr>
 <th>Client</th>
@@ -47,171 +66,23 @@
 <tbody id="installmentTable"></tbody>
 </table>
 </div>
-
 </div>
 
-<!-- ================= PAYROLL ================= -->
-<div id="payrollSection" style="display:none;">
-<h1>Payroll Overview</h1>
-<div id="payrollData"></div>
+<!-- PROJECTS -->
+<div id="projects" class="section hidden">
+<h1>Projects</h1>
+<div class="card" id="projectList"></div>
 </div>
 
-<!-- ================= PROJECT DASHBOARD ================= -->
-<div id="projectSection" style="display:none;">
-<h1>Project Revenue Dashboard</h1>
-<div id="projectData"></div>
+<!-- PAYROLL -->
+<div id="payroll" class="section hidden">
+<h1>Payroll</h1>
+<div class="card" id="payrollList"></div>
 </div>
 
 </div>
 </div>
 
-<script>
-
-const BASE_URL="https://script.google.com/macros/s/AKfycbzL8GoZ3pySX9XPHIOVaFw4xm_wdlTlV2ngFEpPN7-qvugGsopJBOyS1Pzr_j3-ZnDt/exec";
-
-const user = JSON.parse(sessionStorage.getItem("user"));
-if(!user){ window.location.href="index.html"; }
-
-function logout(){
-sessionStorage.clear();
-window.location.href="index.html";
-}
-
-function hideAll(){
-document.getElementById("dashboardSection").style.display="none";
-document.getElementById("installmentSection").style.display="none";
-document.getElementById("payrollSection").style.display="none";
-document.getElementById("projectSection").style.display="none";
-}
-
-function showDashboard(){
-hideAll();
-document.getElementById("dashboardSection").style.display="block";
-loadSummary();
-}
-
-function showInstallments(){
-hideAll();
-document.getElementById("installmentSection").style.display="block";
-loadInstallments();
-}
-
-function showPayroll(){
-hideAll();
-document.getElementById("payrollSection").style.display="block";
-loadPayroll();
-}
-
-function showProjects(){
-hideAll();
-document.getElementById("projectSection").style.display="block";
-loadProjects();
-}
-
-/* ================= INSTALLMENTS ================= */
-
-function loadInstallments(){
-fetch(BASE_URL,{
-method:"POST",
-body:JSON.stringify({action:"getInstallments"})
-})
-.then(res=>res.json())
-.then(data=>{
-const table=document.getElementById("installmentTable");
-table.innerHTML="";
-data.forEach(i=>{
-table.innerHTML+=`
-<tr>
-<td>${i.client}</td>
-<td>${i.total}</td>
-<td>${i.paid}</td>
-<td>${i.due}</td>
-<td>${i.status}</td>
-<td><button onclick="addPayment('${i.id}')">Pay</button></td>
-</tr>`;
-});
-});
-}
-
-function addPayment(id){
-let amount = prompt("Enter Payment Amount:");
-if(!amount) return;
-
-fetch(BASE_URL,{
-method:"POST",
-body:JSON.stringify({
-action:"addPayment",
-id:id,
-amount:amount
-})
-}).then(()=>loadInstallments());
-}
-
-/* ================= FINANCIAL SUMMARY ================= */
-
-function loadSummary(){
-fetch(BASE_URL,{
-method:"POST",
-body:JSON.stringify({action:"getFinancialSummary"})
-})
-.then(res=>res.json())
-.then(d=>{
-document.getElementById("summaryCards").innerHTML=`
-<div class="card">Total Revenue: ${d.revenue}</div>
-<div class="card">Outstanding: ${d.outstanding}</div>
-<div class="card">Overdue: ${d.overdue}</div>`;
-});
-}
-
-/* ================= PAYROLL ================= */
-
-function loadPayroll(){
-fetch(BASE_URL,{
-method:"POST",
-body:JSON.stringify({action:"getPayroll"})
-})
-.then(res=>res.json())
-.then(data=>{
-const container=document.getElementById("payrollData");
-container.innerHTML="";
-data.forEach(p=>{
-container.innerHTML+=`
-<div class="card">
-<strong>${p.name}</strong><br>
-Salary: ${p.salary}<br>
-Commission: ${p.commission}<br>
-Total Payable: ${p.total}
-</div>`;
-});
-});
-}
-
-/* ================= PROJECT DASHBOARD ================= */
-
-function loadProjects(){
-fetch(BASE_URL,{
-method:"POST",
-body:JSON.stringify({action:"getProjectDashboard"})
-})
-.then(res=>res.json())
-.then(data=>{
-const container=document.getElementById("projectData");
-container.innerHTML="";
-data.forEach(p=>{
-container.innerHTML+=`
-<div class="card">
-<strong>${p.project}</strong><br>
-Bookings: ${p.count}<br>
-Revenue: ${p.revenue}
-</div>`;
-});
-});
-}
-
-/* ================= AUTO LOAD ================= */
-
-showDashboard();
-
-</script>
+<script src="app.js"></script>
 </body>
 </html>

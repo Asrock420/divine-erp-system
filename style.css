@@ -1,163 +1,148 @@
-/* Global Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+body{
+margin:0;
+font-family:Segoe UI;
+background:#f4f6f9;
 }
 
-/* Body */
-body {
-  background: #f1f5f9;
-  height: 100vh;
+.wrapper{
+display:flex;
 }
 
-/* Layout */
-.layout {
-  display: flex;
-  height: 100vh;
+.sidebar{
+width:230px;
+background:#111827;
+color:white;
+height:100vh;
+padding:20px;
+position:fixed;
 }
 
-/* Sidebar */
-.sidebar {
-  width: 250px;
-  background: #1e293b;
-  color: #ffffff;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
+.sidebar h2{
+margin-bottom:30px;
 }
 
-.sidebar h2 {
-  margin-bottom: 20px;
-  font-size: 20px;
-  text-align: center;
+.sidebar ul{
+list-style:none;
+padding:0;
 }
 
-.sidebar ul {
-  list-style: none;
-  flex: 1;
+.sidebar ul li{
+padding:12px;
+margin-bottom:10px;
+cursor:pointer;
+border-radius:6px;
 }
 
-.sidebar ul li {
-  padding: 12px 10px;
-  margin-bottom: 5px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.3s;
+.sidebar ul li:hover,
+.sidebar ul li.active{
+background:#374151;
 }
 
-.sidebar ul li:hover {
-  background: #334155;
+.sidebar button{
+position:absolute;
+bottom:20px;
+left:20px;
+width:180px;
+padding:10px;
+background:#ef4444;
+border:none;
+color:white;
+border-radius:6px;
+cursor:pointer;
 }
 
-/* Sidebar Logout Button */
-.sidebar button {
-  padding: 10px;
-  background: #dc2626;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.3s;
+.main{
+margin-left:250px;
+padding:30px;
+width:100%;
 }
 
-.sidebar button:hover {
-  background: #b91c1c;
+.section.hidden{
+display:none;
 }
 
-/* Main Area */
-.main {
-  flex: 1;
-  padding: 30px;
-  overflow-y: auto;
+.kpi-container{
+display:flex;
+gap:20px;
+margin-top:20px;
 }
 
-.main h1 {
-  margin-bottom: 10px;
+.kpi{
+flex:1;
+padding:25px;
+border-radius:12px;
+color:white;
+box-shadow:0 6px 20px rgba(0,0,0,0.1);
 }
 
-.main p {
-  margin-bottom: 20px;
-  color: #555;
+.kpi p{
+font-size:26px;
+font-weight:bold;
+margin-top:10px;
 }
 
-/* Cards */
-.card-container {
-  margin-top: 20px;
+.green{
+background:linear-gradient(45deg,#10b981,#059669);
 }
 
-.card {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 12px rgba(0,0,0,0.08);
-  margin-bottom: 20px;
+.orange{
+background:linear-gradient(45deg,#f59e0b,#d97706);
 }
 
-.card h3 {
-  margin-bottom: 10px;
+.red{
+background:linear-gradient(45deg,#ef4444,#b91c1c);
 }
 
-/* Login Box */
-.login-box {
-  background: #ffffff;
-  padding: 30px;
-  width: 350px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
-  text-align: center;
-  margin: auto;
-  margin-top: 10%;
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 6px 20px rgba(0,0,0,0.05);
+margin-top:20px;
 }
 
-.login-box h2 {
-  margin-bottom: 20px;
+table{
+width:100%;
+border-collapse:collapse;
 }
 
-/* Inputs */
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  outline: none;
+table th, table td{
+padding:12px;
 }
 
-input:focus {
-  border-color: #1e88e5;
+table thead{
+background:#f3f4f6;
 }
 
-/* Buttons */
-button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  background: #1e88e5;
-  color: #ffffff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.3s;
+.login-wrapper{
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
 }
 
-button:hover {
-  background: #1565c0;
+.login-card{
+background:white;
+padding:30px;
+border-radius:12px;
+width:320px;
+box-shadow:0 6px 20px rgba(0,0,0,0.1);
 }
 
-/* Secondary Button */
-.secondary {
-  background: #6c757d;
+.login-card input{
+width:100%;
+padding:10px;
+margin-bottom:15px;
+border:1px solid #ccc;
+border-radius:6px;
 }
 
-.secondary:hover {
-  background: #555;
-}
-
-/* Error Text */
-.error {
-  color: red;
-  margin-top: 10px;
-  font-size: 14px;
+.login-card button{
+width:100%;
+padding:10px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
 }
