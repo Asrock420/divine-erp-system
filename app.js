@@ -1,38 +1,38 @@
-const BASE_URL="https://script.google.com/macros/s/AKfycbwf9Ku2ywk51UwQGfAhdczZ9LxsDiiIGbgQ6a4JXNSs6HJ_2Bkq0jMp3oJvSBjgeBZJ/exec";
+const BASE_URL = "https://script.google.com/macros/s/AKfycbxEfD4Ig1ft56_neMJZOqps7sRjx3EX5XJuHsR5l3EYepikdCIq8NyE2fW1X4h67aFE/exec";
 
 /* ================= LOGIN ================= */
 
 function login(){
-  const email=document.getElementById("email").value;
-  const password=document.getElementById("password").value;
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-  fetch(BASE_URL,{
-    method:"POST",
-    body:JSON.stringify({
-      action:"login",
-      email:email,
-      password:password
+  fetch(BASE_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "login",
+      email: email,
+      password: password
     })
   })
-  .then(res=>res.json())
-  .then(data=>{
-    if(data.success){
-      sessionStorage.setItem("user",JSON.stringify(data.user));
-      window.location.href="dashboard.html";
-    }else{
-      alert("Login Failed");
+  .then(res => res.json())
+  .then(data => {
+    if(data.status){
+      sessionStorage.setItem("user", JSON.stringify(data.user));
+      window.location.href = "dashboard.html";
+    } else {
+      document.getElementById("loginError").innerText = "Login failed. Check credentials";
     }
   });
 }
 
 /* ================= AUTH CHECK ================= */
 
-if(window.location.pathname.includes("dashboard")){
-  const user=JSON.parse(sessionStorage.getItem("user"));
+if(window.location.pathname.includes("dashboard.html")){
+  const user = JSON.parse(sessionStorage.getItem("user"));
   if(!user){
-    window.location.href="index.html";
-  }else{
-    loadSummary();
+    window.location.href = "index.html";
+  } else {
+    loadDashboard();
   }
 }
 
@@ -40,90 +40,107 @@ if(window.location.pathname.includes("dashboard")){
 
 function logout(){
   sessionStorage.clear();
-  window.location.href="index.html";
+  window.location.href = "index.html";
 }
 
-function showSection(id){
-  document.querySelectorAll(".section").forEach(sec=>{
-    sec.classList.add("hidden");
+function showSection(section){
+  document.querySelectorAll(".section").forEach(el => {
+    el.classList.add("hidden");
   });
+  document.getElementById(section).classList.remove("hidden");
 
-  document.getElementById(id).classList.remove("hidden");
-
-  if(id==="dashboard") loadSummary();
-  if(id==="installments") loadInstallments();
-  if(id==="projects") loadProjects();
-  if(id==="payroll") loadPayroll();
+  if(section === "dashboard") loadDashboard();
+  if(section === "installments") loadInstallments();
+  if(section === "projects") loadProjects();
+  if(section === "payroll") loadPayroll();
+  if(section === "collections") loadCollections();
+  if(section === "expenses") loadExpenses();
+  if(section === "requisitions") loadRequisitions();
 }
 
 /* ================= DASHBOARD ================= */
 
-function loadSummary(){
-  fetch(BASE_URL,{
-    method:"POST",
-    body:JSON.stringify({action:"getFinancialSummary"})
+function loadDashboard(){
+  fetch(BASE_URL, {
+    method: "POST",
+    body: JSON.stringify({action: "dashboard"})
   })
-  .then(res=>res.json())
-  .then(d=>{
-    document.getElementById("revenue").innerText=d.revenue || 0;
-    document.getElementById("outstanding").innerText=d.outstanding || 0;
-    document.getElementById("overdue").innerText=d.overdue || 0;
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("summaryCards").innerHTML = `
+      <div class="kpi green">
+        <h3>Total Leads</h3>
+        <p>${data.total_leads}</p>
+      </div>
+      <div class="kpi orange">
+        <h3>Total Bookings</h3>
+        <p>${data.total_bookings}</p>
+      </div>
+      <div class="kpi red">
+        <h3>Total Installments</h3>
+        <p>${data.total_installments}</p>
+      </div>
+    `;
   });
 }
 
 /* ================= INSTALLMENTS ================= */
 
 function loadInstallments(){
-  fetch(BASE_URL,{
-    method:"POST",
-    body:JSON.stringify({action:"getInstallments"})
+  fetch(BASE_URL, {
+    method: "POST",
+    body: JSON.stringify({action: "getInstallments"})
   })
-  .then(res=>res.json())
-  .then(data=>{
-    const table=document.getElementById("installmentTable");
-    table.innerHTML="";
+  .then(res => res.json())
+  .then(data => {
+    const tbl = document.getElementById("installmentTable");
+    tbl.innerHTML = "";
     data.forEach(i=>{
-      table.innerHTML+=`
-      <tr>
-        <td>${i.client}</td>
-        <td>${i.total}</td>
-        <td>${i.paid}</td>
-        <td>${i.due}</td>
-        <td>${i.status}</td>
-        <td><button onclick="payInstallment('${i.id}')">Pay</button></td>
-      </tr>`;
+      tbl.innerHTML+=`
+        <tr>
+          <td>${i.client}</td>
+          <td>${i.total}</td>
+          <td>${i.paid}</td>
+          <td>${i.due}</td>
+          <td>${i.status}</td>
+          <td><button onclick="payInstallment('${i.id}')">Pay</button></td>
+        </tr>
+      `;
     });
   });
 }
 
 function payInstallment(id){
-  let amount=prompt("Enter Payment Amount:");
-  if(!amount) return;
-
+  let amt = prompt("Enter amount:");
+  if(!amt) return;
   fetch(BASE_URL,{
     method:"POST",
-    body:JSON.stringify({
+    body: JSON.stringify({
       action:"addPayment",
-      id:id,
-      amount:amount
+      installment_id:id,
+      amount:amt,
+      method:"Online",
+      reference:"N/A",
+      received_by:JSON.parse(sessionStorage.getItem("user")).name,
+      note:""
     })
   }).then(()=>loadInstallments());
 }
 
-/* ================= PROJECT DASHBOARD ================= */
+/* ================= PROJECTS ================= */
 
 function loadProjects(){
   fetch(BASE_URL,{
     method:"POST",
-    body:JSON.stringify({action:"getProjectDashboard"})
+    body: JSON.stringify({action:"getProjectDashboard"})
   })
   .then(res=>res.json())
   .then(data=>{
-    let html="";
+    let html = "";
     data.forEach(p=>{
-      html+=`<div>${p.project} - ${p.count} Sales - Revenue: ${p.revenue}</div><br>`;
+      html += `<div class="card"><strong>${p.project}</strong><br> Count: ${p.count} <br> Revenue: ${p.revenue}</div>`;
     });
-    document.getElementById("projectList").innerHTML=html;
+    document.getElementById("projectList").innerHTML = html;
   });
 }
 
@@ -132,14 +149,65 @@ function loadProjects(){
 function loadPayroll(){
   fetch(BASE_URL,{
     method:"POST",
-    body:JSON.stringify({action:"getPayroll"})
+    body: JSON.stringify({action:"getPayroll"})
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    let html = "";
+    data.forEach(p=>{
+      html += `<div class="card">${p.name} - ${p.salary} + ${p.commission} = ${p.total}</div>`;
+    });
+    document.getElementById("payrollList").innerHTML = html;
+  });
+}
+
+/* ================= COLLECTIONS ================= */
+
+function loadCollections(){
+  fetch(BASE_URL,{
+    method:"POST",
+    body: JSON.stringify({action:"getCollections"})
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    let html = "";
+    data.forEach(c=>{
+      html += `<div class="card">${c.client_name} - ${c.amount_collected}</div>`;
+    });
+    document.getElementById("collectionList").innerHTML = html;
+  });
+}
+
+/* ================= EXPENSES ================= */
+
+function loadExpenses(){
+  fetch(BASE_URL,{
+    method:"POST",
+    body: JSON.stringify({action:"getExpenses"})
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    let html = "";
+    data.forEach(e=>{
+      html += `<div class="card">${e.expense_category} - ${e.amount}</div>`;
+    });
+    document.getElementById("expenseList").innerHTML = html;
+  });
+}
+
+/* ================= REQUISITIONS ================= */
+
+function loadRequisitions(){
+  fetch(BASE_URL,{
+    method:"POST",
+    body: JSON.stringify({action:"getRequisitions"})
   })
   .then(res=>res.json())
   .then(data=>{
     let html="";
-    data.forEach(p=>{
-      html+=`<div>${p.name} - Salary: ${p.salary} - Commission: ${p.commission} - Total: ${p.total}</div><br>`;
+    data.forEach(r=>{
+      html += `<div class="card">${r.request_type} - ${r.amount}</div>`;
     });
-    document.getElementById("payrollList").innerHTML=html;
+    document.getElementById("requisitionList").innerHTML = html;
   });
 }

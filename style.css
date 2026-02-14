@@ -1,148 +1,174 @@
-body{
-margin:0;
-font-family:Segoe UI;
-background:#f4f6f9;
+/* ------------------------- GENERAL ------------------------- */
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #f4f6f9;
 }
 
-.wrapper{
-display:flex;
+.hidden {
+  display: none;
 }
 
-.sidebar{
-width:230px;
-background:#111827;
-color:white;
-height:100vh;
-padding:20px;
-position:fixed;
+/* ------------------------- SIDEBAR ------------------------- */
+
+.wrapper {
+  display: flex;
 }
 
-.sidebar h2{
-margin-bottom:30px;
+.sidebar {
+  width: 240px;
+  background: #111827;
+  color: white;
+  height: 100vh;
+  padding: 20px;
+  position: fixed;
 }
 
-.sidebar ul{
-list-style:none;
-padding:0;
+.sidebar h2 {
+  margin-bottom: 30px;
+  font-size: 22px;
 }
 
-.sidebar ul li{
-padding:12px;
-margin-bottom:10px;
-cursor:pointer;
-border-radius:6px;
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: 500;
 }
 
 .sidebar ul li:hover,
-.sidebar ul li.active{
-background:#374151;
+.sidebar ul li.active {
+  background: #374151;
 }
 
-.sidebar button{
-position:absolute;
-bottom:20px;
-left:20px;
-width:180px;
-padding:10px;
-background:#ef4444;
-border:none;
-color:white;
-border-radius:6px;
-cursor:pointer;
+.sidebar button {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: 200px;
+  padding: 10px;
+  background: #ef4444;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-.main{
-margin-left:250px;
-padding:30px;
-width:100%;
+/* ------------------------- MAIN ------------------------- */
+
+.main {
+  margin-left: 260px;
+  padding: 30px;
+  width: calc(100% - 260px);
 }
 
-.section.hidden{
-display:none;
+/* ------------------------- KPI CARDS ------------------------- */
+
+.kpi-container {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
 }
 
-.kpi-container{
-display:flex;
-gap:20px;
-margin-top:20px;
+.kpi {
+  flex: 1;
+  padding: 25px;
+  border-radius: 12px;
+  color: white;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
-.kpi{
-flex:1;
-padding:25px;
-border-radius:12px;
-color:white;
-box-shadow:0 6px 20px rgba(0,0,0,0.1);
+.kpi h3 {
+  margin: 0;
 }
 
-.kpi p{
-font-size:26px;
-font-weight:bold;
-margin-top:10px;
+.kpi p {
+  font-size: 26px;
+  font-weight: bold;
 }
 
-.green{
-background:linear-gradient(45deg,#10b981,#059669);
+.green {
+  background: linear-gradient(45deg, #10b981, #059669);
 }
 
-.orange{
-background:linear-gradient(45deg,#f59e0b,#d97706);
+.orange {
+  background: linear-gradient(45deg, #f59e0b, #d97706);
 }
 
-.red{
-background:linear-gradient(45deg,#ef4444,#b91c1c);
+.red {
+  background: linear-gradient(45deg, #ef4444, #b91c1c);
 }
 
-.card{
-background:white;
-padding:20px;
-border-radius:12px;
-box-shadow:0 6px 20px rgba(0,0,0,0.05);
-margin-top:20px;
+/* ------------------------- TABLE ------------------------- */
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
 }
 
-table{
-width:100%;
-border-collapse:collapse;
+table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-table th, table td{
-padding:12px;
+table th,
+table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
 
-table thead{
-background:#f3f4f6;
+table thead {
+  background: #f3f4f6;
 }
 
-.login-wrapper{
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
+/* ------------------------- LOGIN ------------------------- */
+
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-.login-card{
-background:white;
-padding:30px;
-border-radius:12px;
-width:320px;
-box-shadow:0 6px 20px rgba(0,0,0,0.1);
+.login-card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 340px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
-.login-card input{
-width:100%;
-padding:10px;
-margin-bottom:15px;
-border:1px solid #ccc;
-border-radius:6px;
+.login-card input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
-.login-card button{
-width:100%;
-padding:10px;
-background:#2563eb;
-color:white;
-border:none;
-border-radius:6px;
-cursor:pointer;
+.login-card button {
+  width: 100%;
+  padding: 12px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.error-text {
+  color: #ef4444;
+  font-size: 14px;
+  margin-top: 8px;
 }

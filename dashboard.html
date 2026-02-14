@@ -11,40 +11,29 @@
 
 <div class="sidebar">
   <h2>Divine ERP</h2>
+
   <ul>
     <li onclick="showSection('dashboard')" class="active">Dashboard</li>
     <li onclick="showSection('installments')">Installments</li>
     <li onclick="showSection('projects')">Projects</li>
     <li onclick="showSection('payroll')">Payroll</li>
+    <li onclick="showSection('collections')">Collections</li>
+    <li onclick="showSection('expenses')">Expenses</li>
+    <li onclick="showSection('requisitions')">Requisitions</li>
   </ul>
+
   <button onclick="logout()">Logout</button>
 </div>
 
 <div class="main">
 
-<!-- DASHBOARD -->
+<!-- Dashboard -->
 <div id="dashboard" class="section">
   <h1>Financial Overview</h1>
-
-  <div class="kpi-container">
-    <div class="kpi green">
-      <h3>Total Revenue</h3>
-      <p id="revenue">0</p>
-    </div>
-
-    <div class="kpi orange">
-      <h3>Outstanding</h3>
-      <p id="outstanding">0</p>
-    </div>
-
-    <div class="kpi red">
-      <h3>Overdue</h3>
-      <p id="overdue">0</p>
-    </div>
-  </div>
+  <div id="summaryCards"></div>
 </div>
 
-<!-- INSTALLMENTS -->
+<!-- Installments -->
 <div id="installments" class="section hidden">
   <h1>Installments</h1>
   <div class="card">
@@ -64,16 +53,34 @@
   </div>
 </div>
 
-<!-- PROJECTS -->
+<!-- Projects -->
 <div id="projects" class="section hidden">
   <h1>Project Dashboard</h1>
   <div class="card" id="projectList"></div>
 </div>
 
-<!-- PAYROLL -->
+<!-- Payroll -->
 <div id="payroll" class="section hidden">
   <h1>Payroll</h1>
   <div class="card" id="payrollList"></div>
+</div>
+
+<!-- Collections -->
+<div id="collections" class="section hidden">
+  <h1>Collections</h1>
+  <div class="card" id="collectionList"></div>
+</div>
+
+<!-- Expenses -->
+<div id="expenses" class="section hidden">
+  <h1>Expenses</h1>
+  <div class="card" id="expenseList"></div>
+</div>
+
+<!-- Requisitions -->
+<div id="requisitions" class="section hidden">
+  <h1>Requisitions</h1>
+  <div class="card" id="requisitionList"></div>
 </div>
 
 </div>
