@@ -8,70 +8,89 @@
 
 <div class="layout">
 
-  <!-- Sidebar -->
   <div class="sidebar">
     <h2>Divine ERP</h2>
-    <ul id="menuList">
-      <li data-role="ALL">Dashboard</li>
-      <li data-role="Sales,TL,Admin">Leads</li>
-      <li data-role="Sales,TL">Requisitions</li>
-      <li data-role="Admin">User Management</li>
-      <li data-role="Accounts">Accounts</li>
-      <li data-role="CEO">Executive Reports</li>
+    <ul>
+      <li onclick="showDashboard()">Dashboard</li>
+      <li onclick="showLeads()">Leads</li>
     </ul>
     <button onclick="logout()">Logout</button>
   </div>
 
-  <!-- Main Content -->
   <div class="main">
-    <h1>Dashboard</h1>
-    <p id="userInfo"></p>
 
-    <div class="card-container">
+    <div id="dashboardSection">
+      <h1>Dashboard</h1>
+      <p id="userInfo"></p>
       <div class="card">
         <h3>Welcome</h3>
-        <p>This is your secure ERP control panel.</p>
+        <p>This is your Real Estate ERP Control Panel.</p>
       </div>
     </div>
-  </div>
 
+    <div id="leadSection" style="display:none;">
+
+      <h1>Leads Module</h1>
+
+      <div class="card">
+        <h3>Add New Lead</h3>
+
+        <input type="text" id="client_name" placeholder="Client Name">
+        <input type="text" id="phone" placeholder="Phone">
+        <input type="text" id="project" placeholder="Project Name">
+        <input type="text" id="unit_type" placeholder="Unit Type">
+        <input type="number" id="budget" placeholder="Budget">
+        <input type="text" id="source" placeholder="Lead Source">
+        <input type="date" id="follow_up_date">
+        <textarea id="remarks" placeholder="Remarks"></textarea>
+
+        <button onclick="addLead()">Save Lead</button>
+      </div>
+
+      <div class="card">
+        <h3>Lead List</h3>
+        <table border="1" width="100%">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Project</th>
+              <th>Status</th>
+              <th>Assigned</th>
+            </tr>
+          </thead>
+          <tbody id="leadTable"></tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </div>
 </div>
 
+<script src="app.js"></script>
 <script>
 
 const user = JSON.parse(sessionStorage.getItem("user"));
+if(!user){ window.location.href = "index.html"; }
 
-// 🔐 Route Guard
-if(!user){
-  window.location.href = "index.html";
-}
-
-// Show User Info
 document.getElementById("userInfo").innerText =
   "Logged in as: " + user.name + " (" + user.role + ")";
-
-
-// 🔥 Role Based Menu Control
-const menuItems = document.querySelectorAll("#menuList li");
-
-menuItems.forEach(item => {
-
-  const allowedRoles = item.getAttribute("data-role");
-
-  if(allowedRoles !== "ALL") {
-
-    const rolesArray = allowedRoles.split(",");
-
-    if(!rolesArray.includes(user.role)){
-      item.style.display = "none";
-    }
-  }
-});
-
 
 function logout(){
   sessionStorage.clear();
   window.location.href = "index.html";
+}
+
+function showDashboard(){
+  document.getElementById("dashboardSection").style.display = "block";
+  document.getElementById("leadSection").style.display = "none";
+}
+
+function showLeads(){
+  document.getElementById("dashboardSection").style.display = "none";
+  document.getElementById("leadSection").style.display = "block";
+  loadLeads();
 }
 
 </script>

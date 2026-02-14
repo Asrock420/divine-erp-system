@@ -1,63 +1,56 @@
 const BASE_URL = "https://script.google.com/macros/s/AKfycbzvPMZKRx9kqG92dZ1XnfnaH6u2qEiiJInMq-OUB-0KMEyXllHkYh-XkjJYOypmbrn2/exec";
 
-function login() {
+function addLead(){
 
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
-
-  if(!email || !password){
-    document.getElementById("error").innerText = "Email & Password required";
-    return;
-  }
+  const user = JSON.parse(sessionStorage.getItem("user"));
 
   fetch(BASE_URL, {
     method: "POST",
     body: JSON.stringify({
-      action: "login",
-      email: email,
-      password: password
+      action: "addLead",
+      client_name: document.getElementById("client_name").value,
+      phone: document.getElementById("phone").value,
+      project: document.getElementById("project").value,
+      unit_type: document.getElementById("unit_type").value,
+      budget: document.getElementById("budget").value,
+      source: document.getElementById("source").value,
+      follow_up_date: document.getElementById("follow_up_date").value,
+      remarks: document.getElementById("remarks").value,
+      created_by: user.name
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert("Lead Saved");
+    loadLeads();
+  });
+}
+
+function loadLeads(){
+
+  fetch(BASE_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "getLeads"
     })
   })
   .then(res => res.json())
   .then(data => {
 
-    if(data.status === "success") {
+    const table = document.getElementById("leadTable");
+    table.innerHTML = "";
 
-      sessionStorage.setItem("user", JSON.stringify(data.user));
-      window.location.href = "dashboard.html";
+    data.forEach(lead => {
+      table.innerHTML += `
+        <tr>
+          <td>${lead.client_name}</td>
+          <td>${lead.phone}</td>
+          <td>${lead.project}</td>
+          <td>${lead.status}</td>
+          <td>${lead.assigned_to}</td>
+        </tr>
+      `;
+    });
 
-    } else {
-      document.getElementById("error").innerText = "Invalid Credentials";
-    }
-
-  })
-  .catch(() => {
-    document.getElementById("error").innerText = "Server Error";
-  });
-}
-
-
-function createTestUser() {
-
-  fetch(BASE_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "createUser",
-      user_id: "U100",
-      full_name: "Admin User",
-      email: "admin@test.com",
-      password: "1234",
-      role: "Admin",
-      department: "Management",
-      phone: "01700000000",
-      basic_salary: 50000
-    })
-  })
-  .then(res => res.json())
-  .then(() => {
-    alert("Test User Created.\nLogin with:\nEmail: admin@test.com\nPassword: 1234");
-  })
-  .catch(() => {
-    alert("User Creation Failed");
   });
 }
