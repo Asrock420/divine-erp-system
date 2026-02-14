@@ -67,14 +67,14 @@
           <tbody id="leadTable"></tbody>
         </table>
       </div>
-
     </div>
 
   </div>
 </div>
 
 <script>
-const BASE_URL = "https://script.google.com/macros/s/AKfycbzvPMZKRx9kqG92dZ1XnfnaH6u2qEiiJInMq-OUB-0KMEyXllHkYh-XkjJYOypmbrn2/exec";
+
+const BASE_URL = "https://script.google.com/macros/s/AKfycbytevmESfHiAM7KdQm71Gj2PTS8XWr5fRX5vO7RqGyoCF76rZ4vWzxnGWPl_5b6t2gt/exec";
 
 const user = JSON.parse(sessionStorage.getItem("user"));
 if(!user){ window.location.href = "index.html"; }
@@ -133,9 +133,14 @@ function addLead(){
     })
   })
   .then(res=>res.json())
-  .then(()=>{
+  .then(data=>{
+    console.log("Response:", data);
     alert("Lead Saved");
     loadLeads();
+  })
+  .catch(error=>{
+    console.error("Error:", error);
+    alert("Error Saving Lead");
   });
 }
 
@@ -160,6 +165,7 @@ function loadLeads(){
     });
   });
 }
+
 </script>
 
 </body>
