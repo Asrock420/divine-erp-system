@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <title>Divine ERP Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -29,7 +30,6 @@
     </div>
 
     <div id="leadSection" style="display:none;">
-
       <h1>Leads Module</h1>
 
       <div class="card">
@@ -62,17 +62,20 @@
           <tbody id="leadTable"></tbody>
         </table>
       </div>
-
     </div>
 
   </div>
 </div>
 
-<script src="app.js"></script>
-<script>
+<!-- Absolute JS Path -->
+<script src="https://asrock420.github.io/divine-erp-system/app.js"></script>
 
+<script>
 const user = JSON.parse(sessionStorage.getItem("user"));
-if(!user){ window.location.href = "index.html"; }
+
+if(!user){
+  window.location.href = "index.html";
+}
 
 document.getElementById("userInfo").innerText =
   "Logged in as: " + user.name + " (" + user.role + ")";
@@ -92,7 +95,6 @@ function showLeads(){
   document.getElementById("leadSection").style.display = "block";
   loadLeads();
 }
-
 </script>
 
 </body>
