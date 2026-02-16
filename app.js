@@ -233,3 +233,89 @@ function login(){
   });
 
 }
+
+/* ================= CREATE PROJECT ================= */
+
+function createProject(){
+
+  const name = document.getElementById("project_name")?.value.trim();
+  const location = document.getElementById("project_location")?.value.trim();
+  const budget = document.getElementById("project_budget")?.value.trim();
+
+  if(!name){
+    alert("Project name required");
+    return;
+  }
+
+  fetch(BASE_URL,{
+    method:"POST",
+    body: JSON.stringify({
+      action:"createProject",
+      project_name:name,
+      location:location,
+      budget:budget
+    })
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.status){
+      alert("Project Created Successfully");
+      loadDashboard();
+      loadDropdowns();
+      document.getElementById("project_name").value="";
+      document.getElementById("project_location").value="";
+      document.getElementById("project_budget").value="";
+    }else{
+      alert(data.message);
+    }
+  })
+  .catch(err=>{
+    console.error(err);
+    alert("Project creation failed");
+  });
+}
+
+/* ================= CREATE LEAD ================= */
+
+function createLead(){
+
+  const client_name = document.getElementById("client_name")?.value.trim();
+  const phone = document.getElementById("phone")?.value.trim();
+  const project = document.getElementById("project")?.value;
+  const lead_source = document.getElementById("lead_source")?.value;
+  const assign_type = document.getElementById("assign_type")?.value;
+  const team = document.getElementById("team")?.value;
+
+  if(!client_name){
+    alert("Client name required");
+    return;
+  }
+
+  fetch(BASE_URL,{
+    method:"POST",
+    body: JSON.stringify({
+      action:"createLead",
+      client_name:client_name,
+      phone:phone,
+      project:project,
+      lead_source:lead_source,
+      assign_type:assign_type,
+      team:team
+    })
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.status){
+      alert("Lead Created Successfully");
+      loadDashboard();
+      document.getElementById("client_name").value="";
+      document.getElementById("phone").value="";
+    }else{
+      alert(data.message);
+    }
+  })
+  .catch(err=>{
+    console.error(err);
+    alert("Lead creation failed");
+  });
+}

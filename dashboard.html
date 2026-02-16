@@ -89,6 +89,7 @@
 <select id="team"></select>
 
 <button onclick="createLead()">Submit Lead</button>
+
 </div>
 </div>
 
@@ -98,6 +99,7 @@
 <h1>Lead List</h1>
 <div id="leadList"></div>
 </div>
+
 
 <!-- ASSIGNED LEADS -->
 <div id="lead_assigned" class="section hidden">
@@ -125,10 +127,27 @@
 </div>
 
 
-<!-- PROJECTS -->
+<!-- PROJECT OVERVIEW -->
 <div id="projects" class="section hidden">
 <h1>Project Overview</h1>
 <div id="projectList"></div>
+</div>
+
+
+<!-- 🔥 ADD PROJECT (NEW SECTION ADDED) -->
+<div id="project_create" class="section hidden">
+<h1>Add Project</h1>
+
+<div class="card">
+
+<input id="project_name" placeholder="Project Name">
+<input id="project_location" placeholder="Project Location">
+<input id="project_budget" placeholder="Project Budget">
+
+<button onclick="createProject()">Add Project</button>
+
+</div>
+
 </div>
 
 
