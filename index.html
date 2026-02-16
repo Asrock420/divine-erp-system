@@ -2,27 +2,78 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Divine ERP</title>
+<title>Divine ERP – Secure Login</title>
 <link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body class="auth-body">
 
-<div class="auth-container">
+<body class="login-body">
 
-<div class="auth-card">
-<h2>Divine ERP</h2>
+<div class="login-container">
 
-<div id="loginBox">
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-<button onclick="login()">Login</button>
-<p id="loginError" class="error"></p>
-</div>
+  <!-- Left Branding Panel -->
+  <div class="login-left">
+    <div class="brand-box">
+      <h1>Divine ERP</h1>
+      <p>Multi-Company SaaS Real Estate Management System</p>
+      <ul>
+        <li>✔ Lead Automation</li>
+        <li>✔ Commission Engine</li>
+        <li>✔ Installment Tracker</li>
+        <li>✔ Payroll & HR</li>
+      </ul>
+    </div>
+  </div>
 
-</div>
+  <!-- Right Login Panel -->
+  <div class="login-right">
+
+    <div class="login-card">
+
+      <h2>Secure Login</h2>
+
+      <div class="input-group">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="Enter your email">
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" placeholder="Enter password">
+          <span class="toggle-pass" onclick="togglePassword()">👁</span>
+        </div>
+      </div>
+
+      <div class="login-options">
+        <label>
+          <input type="checkbox" id="remember"> Remember Me
+        </label>
+        <span class="forgot">Forgot Password?</span>
+      </div>
+
+      <button class="login-btn" onclick="login()">Login</button>
+
+      <div id="loginLoader" class="loader hidden"></div>
+      <p id="loginError" class="error"></p>
+
+      <div class="login-footer">
+        <small>© 2026 Divine ERP System</small>
+      </div>
+
+    </div>
+
+  </div>
 
 </div>
 
 <script src="app.js"></script>
+<script>
+function togglePassword(){
+  const pass = document.getElementById("password");
+  pass.type = pass.type === "password" ? "text" : "password";
+}
+</script>
+
 </body>
 </html>

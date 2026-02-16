@@ -2,29 +2,65 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Divine ERP Dashboard</title>
+<title>Divine ERP</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="layout">
 
+<!-- SIDEBAR -->
 <div class="sidebar">
 <h2>Divine ERP</h2>
 
-<ul>
+<ul class="menu">
+
 <li onclick="showSection('dashboard')">Dashboard</li>
-<li onclick="showSection('leads')">Leads</li>
-<li onclick="showSection('installments')">Installments</li>
-<li onclick="showSection('projects')">Projects</li>
-<li onclick="showSection('payroll')">Payroll</li>
+
+<li class="has-sub">
+<span onclick="toggleSub(this)">Leads ▾</span>
+<ul class="submenu">
+<li onclick="showSection('lead_create')">Create Lead</li>
+<li onclick="showSection('lead_list')">Lead List</li>
+<li onclick="showSection('lead_assigned')">Assigned Leads</li>
+</ul>
+</li>
+
+<li class="has-sub">
+<span onclick="toggleSub(this)">Installments ▾</span>
+<ul class="submenu">
+<li onclick="showSection('installments')">All Installments</li>
+<li onclick="showSection('installment_due')">Due List</li>
+</ul>
+</li>
+
+<li class="has-sub">
+<span onclick="toggleSub(this)">Projects ▾</span>
+<ul class="submenu">
+<li onclick="showSection('projects')">Project Overview</li>
+<li onclick="showSection('project_create')">Add Project</li>
+</ul>
+</li>
+
+<li class="has-sub">
+<span onclick="toggleSub(this)">Payroll ▾</span>
+<ul class="submenu">
+<li onclick="showSection('commission_report')">Commission Report</li>
+<li onclick="showSection('salary_report')">Salary Report</li>
+</ul>
+</li>
+
 <li onclick="showSection('collections')">Collections</li>
 <li onclick="showSection('expenses')">Expenses</li>
 <li onclick="showSection('requisitions')">Requisitions</li>
+
 <li onclick="logout()">Logout</li>
+
 </ul>
 </div>
 
+
+<!-- MAIN CONTENT -->
 <div class="main">
 
 <!-- DASHBOARD -->
@@ -33,11 +69,12 @@
 <div id="summaryCards" class="grid"></div>
 </div>
 
-<!-- LEADS -->
-<div id="leads" class="section hidden">
-<h1>Create Lead</h1>
 
+<!-- CREATE LEAD -->
+<div id="lead_create" class="section hidden">
+<h1>Create Lead</h1>
 <div class="card">
+
 <input id="client_name" placeholder="Client Name">
 <input id="phone" placeholder="Phone">
 
@@ -53,9 +90,21 @@
 
 <button onclick="createLead()">Submit Lead</button>
 </div>
+</div>
 
+
+<!-- LEAD LIST -->
+<div id="lead_list" class="section hidden">
+<h1>Lead List</h1>
 <div id="leadList"></div>
 </div>
+
+<!-- ASSIGNED LEADS -->
+<div id="lead_assigned" class="section hidden">
+<h1>Assigned Leads</h1>
+<div id="assignedLeadList"></div>
+</div>
+
 
 <!-- INSTALLMENTS -->
 <div id="installments" class="section hidden">
@@ -75,17 +124,20 @@
 </table>
 </div>
 
+
 <!-- PROJECTS -->
 <div id="projects" class="section hidden">
-<h1>Projects</h1>
+<h1>Project Overview</h1>
 <div id="projectList"></div>
 </div>
 
-<!-- PAYROLL -->
-<div id="payroll" class="section hidden">
-<h1>Payroll</h1>
-<div id="payrollList"></div>
+
+<!-- COMMISSION -->
+<div id="commission_report" class="section hidden">
+<h1>Commission Report</h1>
+<div id="commissionList"></div>
 </div>
+
 
 <!-- COLLECTIONS -->
 <div id="collections" class="section hidden">
@@ -93,11 +145,13 @@
 <div id="collectionList"></div>
 </div>
 
+
 <!-- EXPENSES -->
 <div id="expenses" class="section hidden">
 <h1>Expenses</h1>
 <div id="expenseList"></div>
 </div>
+
 
 <!-- REQUISITIONS -->
 <div id="requisitions" class="section hidden">
