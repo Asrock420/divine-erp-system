@@ -2,9 +2,16 @@ const BASE_URL = "https://script.google.com/macros/s/AKfycbxab3ikmdCC2YnWUSx6etO
 
 /* ================= AUTH ================= */
 
-const user = JSON.parse(sessionStorage.getItem("user"));
-if (!user) {
-  window.location.href = "index.html";
+let user = null;
+
+if (window.location.pathname.includes("dashboard.html")) {
+  user = JSON.parse(sessionStorage.getItem("user"));
+  if (!user) {
+    window.location.href = "index.html";
+  } else {
+    applyRoleVisibility();
+    loadDashboard();
+  }
 }
 
 /* ================= NAVIGATION ================= */
@@ -80,13 +87,24 @@ applyRoleVisibility();
 
 /* ================= DASHBOARD KPI ANIMATION ================= */
 
-function animateCounter(id, start, end, duration) {
+function animateCounter(id, start, end, duration){
+
+  end = Number(end);
+  if(isNaN(end) || end < 0) end = 0;
+
   let range = end - start;
   let current = start;
+
+  if(range === 0){
+    document.getElementById(id).innerText = end;
+    return;
+  }
+
   let increment = end > start ? 1 : -1;
-  let stepTime = Math.abs(Math.floor(duration / range));
+  let stepTime = Math.abs(Math.floor(duration / Math.abs(range)));
 
   let obj = document.getElementById(id);
+
   let timer = setInterval(function () {
     current += increment;
     obj.innerText = current;
@@ -177,30 +195,41 @@ function loadCommission() {
   });
 }
 function login(){
-  document.getElementById("loginLoader").classList.remove("hidden");
-  document.getElementById("loginError").innerText="";
 
-  const email=document.getElementById("email").value.trim();
-  const password=document.getElementById("password").value.trim();
+  const loader = document.getElementById("loginLoader");
+  const errorBox = document.getElementById("loginError");
+
+  loader.classList.remove("hidden");
+  errorBox.innerText = "";
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
   fetch(BASE_URL,{
     method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
+    body: JSON.stringify({
       action:"login",
       email:email,
       password:password
     })
   })
-  .then(res=>res.json())
-  .then(data=>{
-    document.getElementById("loginLoader").classList.add("hidden");
+  .then(res => res.json())
+  .then(data => {
+
+    loader.classList.add("hidden");
 
     if(data.status){
-      sessionStorage.setItem("user",JSON.stringify(data.user));
-      window.location.href="dashboard.html";
+      sessionStorage.setItem("user", JSON.stringify(data.user));
+      window.location.href = "dashboard.html";
     }else{
-      document.getElementById("loginError").innerText="Invalid Credentials";
+      errorBox.innerText = data.message || "Invalid Credentials";
     }
+
+  })
+  .catch(err=>{
+    loader.classList.add("hidden");
+    errorBox.innerText = "Server connection failed";
+    console.error(err);
   });
+
 }
