@@ -1,4 +1,4 @@
-const BASE_URL = "https://script.google.com/macros/s/AKfycbx3XBFag55L_XSLary2FlUfwA7rdVhZF8-jnWF8PI2GUMDoOpQSoAVFd_4Mq9fFnOMT/exec";
+const BASE_URL = "https://script.google.com/macros/s/AKfycbwtefjlP5BNw3jqLCWOdQuF-QlLmzMIVrEHUndgw29q-wvidgYYx9EJ3KbeJQLuLqqh/exec";
 
 /* ================= AUTH ================= */
 
