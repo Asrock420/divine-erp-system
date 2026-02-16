@@ -3,24 +3,21 @@ const BASE_URL = "https://script.google.com/macros/s/AKfycbyq5pTjmygVlQHRb5GnBN-
 /* ================= LOGIN ================= */
 
 function login(){
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
-
-  fetch(BASE_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "login",
-      email: email,
-      password: password
+  fetch(BASE_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      action:"login",
+      email:document.getElementById("email").value,
+      password:document.getElementById("password").value
     })
   })
-  .then(res => res.json())
-  .then(data => {
+  .then(res=>res.json())
+  .then(data=>{
     if(data.status){
-      sessionStorage.setItem("user", JSON.stringify(data.user));
-      window.location.href = "dashboard.html";
-    } else {
-      document.getElementById("loginError").innerText = "Login failed. Check credentials";
+      sessionStorage.setItem("user",JSON.stringify(data.user));
+      window.location.href="dashboard.html";
+    }else{
+      document.getElementById("loginError").innerText="Invalid Login";
     }
   });
 }
@@ -30,184 +27,90 @@ function login(){
 if(window.location.pathname.includes("dashboard.html")){
   const user = JSON.parse(sessionStorage.getItem("user"));
   if(!user){
-    window.location.href = "index.html";
-  } else {
+    window.location.href="index.html";
+  }else{
     loadDashboard();
+    loadProjectsDropdown();
+    loadLeadSources();
   }
 }
 
 /* ================= NAVIGATION ================= */
 
-function logout(){
-  sessionStorage.clear();
-  window.location.href = "index.html";
+function showSection(id){
+  document.querySelectorAll(".section").forEach(s=>s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
 }
 
-function showSection(section){
-  document.querySelectorAll(".section").forEach(el => {
-    el.classList.add("hidden");
-  });
-  document.getElementById(section).classList.remove("hidden");
-
-  if(section === "dashboard") loadDashboard();
-  if(section === "installments") loadInstallments();
-  if(section === "projects") loadProjects();
-  if(section === "payroll") loadPayroll();
-  if(section === "collections") loadCollections();
-  if(section === "expenses") loadExpenses();
-  if(section === "requisitions") loadRequisitions();
+function logout(){
+  sessionStorage.clear();
+  window.location.href="index.html";
 }
 
 /* ================= DASHBOARD ================= */
 
 function loadDashboard(){
-  fetch(BASE_URL, {
-    method: "POST",
-    body: JSON.stringify({action: "dashboard"})
+  fetch(BASE_URL,{
+    method:"POST",
+    body:JSON.stringify({action:"dashboard"})
   })
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("summaryCards").innerHTML = `
-      <div class="kpi green">
-        <h3>Total Leads</h3>
-        <p>${data.total_leads}</p>
-      </div>
-      <div class="kpi orange">
-        <h3>Total Bookings</h3>
-        <p>${data.total_bookings}</p>
-      </div>
-      <div class="kpi red">
-        <h3>Total Installments</h3>
-        <p>${data.total_installments}</p>
-      </div>
+  .then(res=>res.json())
+  .then(d=>{
+    document.getElementById("summaryCards").innerHTML=`
+      <div class="card">Leads: ${d.total_leads}</div>
+      <div class="card">Bookings: ${d.total_bookings}</div>
+      <div class="card">Installments: ${d.total_installments}</div>
     `;
   });
 }
 
-/* ================= INSTALLMENTS ================= */
+/* ================= LEADS ================= */
 
-function loadInstallments(){
-  fetch(BASE_URL, {
-    method: "POST",
-    body: JSON.stringify({action: "getInstallments"})
-  })
-  .then(res => res.json())
-  .then(data => {
-    const tbl = document.getElementById("installmentTable");
-    tbl.innerHTML = "";
-    data.forEach(i=>{
-      tbl.innerHTML+=`
-        <tr>
-          <td>${i.client}</td>
-          <td>${i.total}</td>
-          <td>${i.paid}</td>
-          <td>${i.due}</td>
-          <td>${i.status}</td>
-          <td><button onclick="payInstallment('${i.id}')">Pay</button></td>
-        </tr>
-      `;
-    });
-  });
-}
+function createLead(){
+  const user = JSON.parse(sessionStorage.getItem("user"));
 
-function payInstallment(id){
-  let amt = prompt("Enter amount:");
-  if(!amt) return;
   fetch(BASE_URL,{
     method:"POST",
-    body: JSON.stringify({
-      action:"addPayment",
-      installment_id:id,
-      amount:amt,
-      method:"Online",
-      reference:"N/A",
-      received_by:JSON.parse(sessionStorage.getItem("user")).name,
-      note:""
+    body:JSON.stringify({
+      action:"createLead",
+      client_name:client_name.value,
+      phone:phone.value,
+      project:project.value,
+      lead_source_name:lead_source.value,
+      lead_source_code:lead_source.value,
+      assign_type:assign_type.value,
+      assigned_team:team.value,
+      created_by:user.full_name
     })
-  }).then(()=>loadInstallments());
+  }).then(()=>alert("Lead Created"));
 }
 
-/* ================= PROJECTS ================= */
-
-function loadProjects(){
+function loadProjectsDropdown(){
   fetch(BASE_URL,{
     method:"POST",
-    body: JSON.stringify({action:"getProjectDashboard"})
-  })
-  .then(res=>res.json())
-  .then(data=>{
-    let html = "";
-    data.forEach(p=>{
-      html += `<div class="card"><strong>${p.project}</strong><br> Count: ${p.count} <br> Revenue: ${p.revenue}</div>`;
-    });
-    document.getElementById("projectList").innerHTML = html;
-  });
-}
-
-/* ================= PAYROLL ================= */
-
-function loadPayroll(){
-  fetch(BASE_URL,{
-    method:"POST",
-    body: JSON.stringify({action:"getPayroll"})
-  })
-  .then(res=>res.json())
-  .then(data=>{
-    let html = "";
-    data.forEach(p=>{
-      html += `<div class="card">${p.name} - ${p.salary} + ${p.commission} = ${p.total}</div>`;
-    });
-    document.getElementById("payrollList").innerHTML = html;
-  });
-}
-
-/* ================= COLLECTIONS ================= */
-
-function loadCollections(){
-  fetch(BASE_URL,{
-    method:"POST",
-    body: JSON.stringify({action:"getCollections"})
-  })
-  .then(res=>res.json())
-  .then(data=>{
-    let html = "";
-    data.forEach(c=>{
-      html += `<div class="card">${c.client_name} - ${c.amount_collected}</div>`;
-    });
-    document.getElementById("collectionList").innerHTML = html;
-  });
-}
-
-/* ================= EXPENSES ================= */
-
-function loadExpenses(){
-  fetch(BASE_URL,{
-    method:"POST",
-    body: JSON.stringify({action:"getExpenses"})
-  })
-  .then(res=>res.json())
-  .then(data=>{
-    let html = "";
-    data.forEach(e=>{
-      html += `<div class="card">${e.expense_category} - ${e.amount}</div>`;
-    });
-    document.getElementById("expenseList").innerHTML = html;
-  });
-}
-
-/* ================= REQUISITIONS ================= */
-
-function loadRequisitions(){
-  fetch(BASE_URL,{
-    method:"POST",
-    body: JSON.stringify({action:"getRequisitions"})
+    body:JSON.stringify({action:"getProjects"})
   })
   .then(res=>res.json())
   .then(data=>{
     let html="";
-    data.forEach(r=>{
-      html += `<div class="card">${r.request_type} - ${r.amount}</div>`;
+    data.forEach(p=>{
+      html+=`<option>${p.project_name}</option>`;
     });
-    document.getElementById("requisitionList").innerHTML = html;
+    project.innerHTML=html;
+  });
+}
+
+function loadLeadSources(){
+  fetch(BASE_URL,{
+    method:"POST",
+    body:JSON.stringify({action:"getLeadSources"})
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    let html="";
+    data.forEach(s=>{
+      html+=`<option value="${s.source_code}">${s.source_name}</option>`;
+    });
+    lead_source.innerHTML=html;
   });
 }

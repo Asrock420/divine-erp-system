@@ -7,80 +7,102 @@
 </head>
 <body>
 
-<div class="wrapper">
+<div class="layout">
 
 <div class="sidebar">
-  <h2>Divine ERP</h2>
+<h2>Divine ERP</h2>
 
-  <ul>
-    <li onclick="showSection('dashboard')" class="active">Dashboard</li>
-    <li onclick="showSection('installments')">Installments</li>
-    <li onclick="showSection('projects')">Projects</li>
-    <li onclick="showSection('payroll')">Payroll</li>
-    <li onclick="showSection('collections')">Collections</li>
-    <li onclick="showSection('expenses')">Expenses</li>
-    <li onclick="showSection('requisitions')">Requisitions</li>
-  </ul>
-
-  <button onclick="logout()">Logout</button>
+<ul>
+<li onclick="showSection('dashboard')">Dashboard</li>
+<li onclick="showSection('leads')">Leads</li>
+<li onclick="showSection('installments')">Installments</li>
+<li onclick="showSection('projects')">Projects</li>
+<li onclick="showSection('payroll')">Payroll</li>
+<li onclick="showSection('collections')">Collections</li>
+<li onclick="showSection('expenses')">Expenses</li>
+<li onclick="showSection('requisitions')">Requisitions</li>
+<li onclick="logout()">Logout</li>
+</ul>
 </div>
 
 <div class="main">
 
-<!-- Dashboard -->
+<!-- DASHBOARD -->
 <div id="dashboard" class="section">
-  <h1>Financial Overview</h1>
-  <div id="summaryCards"></div>
+<h1>Dashboard Overview</h1>
+<div id="summaryCards" class="grid"></div>
 </div>
 
-<!-- Installments -->
+<!-- LEADS -->
+<div id="leads" class="section hidden">
+<h1>Create Lead</h1>
+
+<div class="card">
+<input id="client_name" placeholder="Client Name">
+<input id="phone" placeholder="Phone">
+
+<select id="project"></select>
+<select id="lead_source"></select>
+
+<select id="assign_type">
+<option value="Manual">Manual</option>
+<option value="Round Robin">Round Robin</option>
+</select>
+
+<select id="team"></select>
+
+<button onclick="createLead()">Submit Lead</button>
+</div>
+
+<div id="leadList"></div>
+</div>
+
+<!-- INSTALLMENTS -->
 <div id="installments" class="section hidden">
-  <h1>Installments</h1>
-  <div class="card">
-    <table>
-      <thead>
-        <tr>
-          <th>Client</th>
-          <th>Total</th>
-          <th>Paid</th>
-          <th>Due</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="installmentTable"></tbody>
-    </table>
-  </div>
+<h1>Installments</h1>
+<table>
+<thead>
+<tr>
+<th>Client</th>
+<th>Total</th>
+<th>Paid</th>
+<th>Due</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="installmentTable"></tbody>
+</table>
 </div>
 
-<!-- Projects -->
+<!-- PROJECTS -->
 <div id="projects" class="section hidden">
-  <h1>Project Dashboard</h1>
-  <div class="card" id="projectList"></div>
+<h1>Projects</h1>
+<div id="projectList"></div>
 </div>
 
-<!-- Payroll -->
+<!-- PAYROLL -->
 <div id="payroll" class="section hidden">
-  <h1>Payroll</h1>
-  <div class="card" id="payrollList"></div>
+<h1>Payroll</h1>
+<div id="payrollList"></div>
 </div>
 
-<!-- Collections -->
+<!-- COLLECTIONS -->
 <div id="collections" class="section hidden">
-  <h1>Collections</h1>
-  <div class="card" id="collectionList"></div>
+<h1>Collections</h1>
+<div id="collectionList"></div>
 </div>
 
-<!-- Expenses -->
+<!-- EXPENSES -->
 <div id="expenses" class="section hidden">
-  <h1>Expenses</h1>
-  <div class="card" id="expenseList"></div>
+<h1>Expenses</h1>
+<div id="expenseList"></div>
 </div>
 
-<!-- Requisitions -->
+<!-- REQUISITIONS -->
 <div id="requisitions" class="section hidden">
-  <h1>Requisitions</h1>
-  <div class="card" id="requisitionList"></div>
+<h1>Requisitions</h1>
+<div id="requisitionList"></div>
 </div>
 
 </div>
