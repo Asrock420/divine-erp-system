@@ -52,7 +52,14 @@
 
 <li onclick="showSection('collections')">Collections</li>
 <li onclick="showSection('expenses')">Expenses</li>
-<li onclick="showSection('requisitions')">Requisitions</li>
+
+<li class="has-sub">
+<span onclick="toggleSub(this)">Requisitions ▾</span>
+<ul class="submenu">
+<li onclick="showSection('requisition_create')">Create Requisition</li>
+<li onclick="showSection('requisitions')">Requisition List</li>
+</ul>
+</li>
 
 <li onclick="logout()">Logout</li>
 
@@ -69,87 +76,59 @@
 <div id="summaryCards" class="grid"></div>
 </div>
 
-
 <!-- CREATE LEAD -->
 <div id="lead_create" class="section hidden">
 <h1>Create Lead</h1>
 <div class="card">
-
 <input id="client_name" placeholder="Client Name">
 <input id="phone" placeholder="Phone">
-
 <select id="project"></select>
 <select id="lead_source"></select>
-
 <select id="assign_type">
 <option value="Manual">Manual</option>
 <option value="Round Robin">Round Robin</option>
 </select>
-
 <select id="team"></select>
-
 <button onclick="createLead()">Submit Lead</button>
-
 </div>
 </div>
 
-
-<!-- LEAD LIST -->
-<div id="lead_list" class="section hidden">
-<h1>Lead List</h1>
-<div id="leadList"></div>
-</div>
-
-
-<!-- ASSIGNED LEADS -->
-<div id="lead_assigned" class="section hidden">
-<h1>Assigned Leads</h1>
-<div id="assignedLeadList"></div>
-</div>
-
-
-<!-- INSTALLMENTS -->
-<div id="installments" class="section hidden">
-<h1>Installments</h1>
-<table>
-<thead>
-<tr>
-<th>Client</th>
-<th>Total</th>
-<th>Paid</th>
-<th>Due</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody id="installmentTable"></tbody>
-</table>
-</div>
-
-
-<!-- PROJECT OVERVIEW -->
-<div id="projects" class="section hidden">
-<h1>Project Overview</h1>
-<div id="projectList"></div>
-</div>
-
-
-<!-- 🔥 ADD PROJECT (NEW SECTION ADDED) -->
+<!-- ADD PROJECT -->
 <div id="project_create" class="section hidden">
 <h1>Add Project</h1>
-
 <div class="card">
-
 <input id="project_name" placeholder="Project Name">
 <input id="project_location" placeholder="Project Location">
 <input id="project_budget" placeholder="Project Budget">
-
 <button onclick="createProject()">Add Project</button>
-
+</div>
 </div>
 
+<!-- 🔥 CREATE REQUISITION (NEW) -->
+<div id="requisition_create" class="section hidden">
+<h1>Create Requisition</h1>
+<div class="card">
+
+<select id="req_type">
+<option value="Office Expense">Office Expense</option>
+<option value="Marketing Expense">Marketing Expense</option>
+<option value="Travel Expense">Travel Expense</option>
+<option value="Salary Advance">Salary Advance</option>
+</select>
+
+<input id="req_amount" placeholder="Amount">
+<input id="req_note" placeholder="Note / Description">
+
+<button onclick="createRequisition()">Submit Requisition</button>
+
+</div>
 </div>
 
+<!-- REQUISITION LIST -->
+<div id="requisitions" class="section hidden">
+<h1>Requisition List</h1>
+<div id="requisitionList"></div>
+</div>
 
 <!-- COMMISSION -->
 <div id="commission_report" class="section hidden">
@@ -157,25 +136,16 @@
 <div id="commissionList"></div>
 </div>
 
-
 <!-- COLLECTIONS -->
 <div id="collections" class="section hidden">
 <h1>Collections</h1>
 <div id="collectionList"></div>
 </div>
 
-
 <!-- EXPENSES -->
 <div id="expenses" class="section hidden">
 <h1>Expenses</h1>
 <div id="expenseList"></div>
-</div>
-
-
-<!-- REQUISITIONS -->
-<div id="requisitions" class="section hidden">
-<h1>Requisitions</h1>
-<div id="requisitionList"></div>
 </div>
 
 </div>

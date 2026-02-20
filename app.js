@@ -1,4 +1,4 @@
-const BASE_URL = "https://script.google.com/macros/s/AKfycbxab3ikmdCC2YnWUSx6etOR2dttbFwsObZyHPxd7Q7_qhwgIAiEsjhoOoKzU4ZbADWR/exec";
+const BASE_URL = "https://script.google.com/macros/s/AKfycbywODb0uELb87HgxDf9-zTOwIh_rtB_drcUe3Yrt39lB9Nsd6MzhVZcgWxw5hxbN7zl/exec";
 
 /* ================= AUTH ================= */
 
@@ -17,10 +17,37 @@ if (window.location.pathname.includes("dashboard.html")) {
 /* ================= NAVIGATION ================= */
 
 function showSection(section) {
+
   document.querySelectorAll(".section").forEach(el => {
     el.classList.add("hidden");
   });
-  document.getElementById(section).classList.remove("hidden");
+
+  const target = document.getElementById(section);
+  if(target){
+    target.classList.remove("hidden");
+  }
+
+  /* -------- AUTO LOAD SYSTEM -------- */
+
+  if(section === "dashboard"){
+    loadDashboard();
+  }
+
+  if(section === "requisitions"){
+    loadRequisitions();
+  }
+
+  if(section === "projects"){
+    loadProjects?.();
+  }
+
+  if(section === "lead_list"){
+    loadLeads?.();
+  }
+
+  if(section === "commission_report"){
+    loadCommission();
+  }
 }
 
 function toggleSub(el) {
@@ -32,6 +59,8 @@ function logout() {
   sessionStorage.clear();
   window.location.href = "index.html";
 }
+
+
 
 /* ================= ROLE BASED MENU VISIBILITY ================= */
 
@@ -317,5 +346,161 @@ function createLead(){
   .catch(err=>{
     console.error(err);
     alert("Lead creation failed");
+  });
+}
+
+/* ================= CREATE REQUISITION ================= */
+
+function createRequisition(){
+
+  const type = document.getElementById("req_type").value;
+  const amount = document.getElementById("req_amount").value;
+  const note = document.getElementById("req_note").value;
+
+  if(!amount){
+    alert("Amount required");
+    return;
+  }
+
+  fetch(BASE_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      action:"createRequisition",
+      type:type,
+      amount:amount,
+      note:note,
+      user:user.name
+    })
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    if(data.status){
+      alert("Requisition Submitted");
+      document.getElementById("req_amount").value="";
+      document.getElementById("req_note").value="";
+    }else{
+      alert(data.message);
+    }
+  });
+}
+
+function approveReq(id){
+  fetch(BASE_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      action:"approveRequisition",
+      id:id
+    })
+  }).then(()=>alert("Approved"));
+}
+
+function rejectReq(id){
+  fetch(BASE_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      action:"rejectRequisition",
+      id:id
+    })
+  }).then(()=>alert("Rejected"));
+}
+
+/* ================= REQUISITION LIST + APPROVAL UI ================= */
+
+function loadRequisitions(){
+
+  fetch(BASE_URL,{
+    method:"POST",
+    body:JSON.stringify({action:"getRequisitions"})
+  })
+  .then(res=>res.json())
+  .then(data=>{
+
+    let html = `
+      <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Level</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+    `;
+
+    data.forEach(r=>{
+
+      let actionButtons = "";
+
+      if(r.status === "Pending"){
+
+        if(r.level === "TL" && user.role === "Team Leader"){
+          actionButtons = approvalButtons(r.id);
+        }
+
+        if(r.level === "Admin" && user.department === "Admin & HR Logistic"){
+          actionButtons = approvalButtons(r.id);
+        }
+
+        if(r.level === "CEO" && user.role === "Chief System Architect"){
+          actionButtons = approvalButtons(r.id);
+        }
+      }
+
+      html += `
+        <tr>
+          <td>${r.type}</td>
+          <td>${r.amount}</td>
+          <td>${r.status}</td>
+          <td>${r.level}</td>
+          <td>${actionButtons}</td>
+        </tr>
+      `;
+    });
+
+    html += "</tbody></table>";
+
+    document.getElementById("requisitionList").innerHTML = html;
+
+  });
+}
+
+function approvalButtons(id){
+  return `
+    <button onclick="approveReq('${id}')" style="background:#28a745;margin-right:5px;">Approve</button>
+    <button onclick="rejectReq('${id}')" style="background:#dc3545;">Reject</button>
+  `;
+}
+
+function approveReq(id){
+
+  fetch(BASE_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      action:"approveRequisition",
+      id:id
+    })
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    alert(data.message);
+    loadRequisitions();
+  });
+}
+
+function rejectReq(id){
+
+  fetch(BASE_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      action:"rejectRequisition",
+      id:id
+    })
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    alert(data.message);
+    loadRequisitions();
   });
 }
